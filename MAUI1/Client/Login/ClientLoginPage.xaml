@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI1.Client.ClientLoginPage"
+             xmlns:log="clr-namespace:MAUI1.Client.Login"
+             xmlns:mconv="clr-namespace:MAUI1.Converters"
+              Background="#212121">
+    
+    <ContentPage.BindingContext>
+        <log:ClientLoginViewModel></log:ClientLoginViewModel>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+
+        <ResourceDictionary>
+            <mconv:MultiConverter x:Key="RConverter"></mconv:MultiConverter>
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="FontSize" Value="Body"></Setter>
+                <Setter Property="BackgroundColor" Value="Red"></Setter>
+            </Style>
+            <Style x:Key="LabelStyle" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold"></Setter>
+                <Setter Property="Margin" Value="0,10,0,0"></Setter>
+                <Setter Property="FontSize" Value="14"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid VerticalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Text="Номер телефона" TextColor="Lavender" Grid.Row="0" Style="{x:StaticResource}"></Label>
+                <Entry x:Name="Login"  BackgroundColor="Lavender" FontSize="14" Grid.Row="1"  Text="dada3"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Text="Пароль" Grid.Row="0" TextColor="Lavender" Style="{StaticResource LabelStyle}"></Label>
+                <Entry x:Name="Password" BackgroundColor="Lavender" FontSize="14" Grid.Row="1"  Text="dada3"/>
+            </Grid>
+        </Grid>
+        <Button Grid.Row="2" Grid.Column="1" HeightRequest="50" VerticalOptions="StartAndExpand" Margin="0,20,0,0" BackgroundColor="Lavender" TextColor="Black"   Text="Войти">
+            <Button.CommandParameter>
+                <MultiBinding Converter="{StaticResource RConverter}">
+                    <Binding Source="{x:Reference Login}" Path="Text"></Binding>
+                    <Binding Source="{x:Reference Password}" Path="Text"></Binding>
+                </MultiBinding>
+            </Button.CommandParameter>
+        </Button>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MAUI1.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MAUI1"
+    xmlns:client="clr-namespace:MAUI1.Client"
+    Shell.FlyoutBehavior="Disabled">
+    <TabBar>
+        <Tab Title="HelloWorld">
+            <ShellContent ContentTemplate="{DataTemplate client:ClientEncountingPage}"
+                Route="ClientEncountingPage">
+            </ShellContent>
+        </Tab>
+        <Tab Title="Registration">
+        <ShellContent 
+                    ContentTemplate = "{DataTemplate client:ClientRegistrationPage}"
+                    Route="Reg">
+        </ShellContent>
+        </Tab>
+        <Tab Title="Login">
+            <ShellContent 
+                    ContentTemplate = "{DataTemplate client:ClientLoginPage}"
+                    Route="Log">
+            </ShellContent>
+        </Tab>
+    </TabBar>
+    <TabBar>
+        <ShellContent
+        Title="Mida"
+        ContentTemplate="{DataTemplate client:ClientPersonalAccountPage}"
+        Route="ClientAccount"/>
+    </TabBar>
+</Shell>

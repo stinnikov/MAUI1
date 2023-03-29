@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI1.ClientPage"
+             xmlns:local="clr-namespace:MAUI1.Client"
+             Title="ClientPage">
+    <ContentPage.Resources>
+        <local:ClientViewModel x:Key="ClientViewModel"></local:ClientViewModel>
+        <ResourceDictionary>
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="FontSize" Value="Body"></Setter>
+                <Setter Property="BackgroundColor" Value="Red"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <VerticalStackLayout>
+        <Grid BindingContext="{StaticResource ClientViewModel}" IsVisible="True" RowSpacing="250">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Column="1" Grid.Row="1" Text="Knopka" IsEnabled="True" Style="{StaticResource buttonStyle}" Command="{Binding Path=PageCommand}" ></Button>
+        </Grid>
+    </VerticalStackLayout>
+    
+</ContentPage>
