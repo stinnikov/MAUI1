@@ -13,10 +13,10 @@
             </ShellContent>
         </Tab>
         <Tab Title="Registration">
-        <ShellContent 
+            <ShellContent 
                     ContentTemplate = "{DataTemplate client:ClientRegistrationPage}"
                     Route="Reg">
-        </ShellContent>
+            </ShellContent>
         </Tab>
         <Tab Title="Login">
             <ShellContent 

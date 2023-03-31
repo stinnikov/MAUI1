@@ -12,16 +12,12 @@ namespace MAUI1.Client.Registration
 {
     internal class ClientRegistrationViewModel
     {
-        public TCPCLient TCPCLient { get; set; } = new TCPCLient();
-        public ObservableCollection<ClientUser> Clients { get; set; } = new();
-        public RegistrationContext registrationContext = new();
+        //public RegistrationContext registrationContext = new();
         public ICommand RegistrationCommand { get; set; }
         public ClientRegistrationViewModel()
         {
             Linker.ViewModels.Add(this);
-            
-            Clients = registrationContext.Clients.Local.ToObservableCollection();
-            RegistrationCommand = new Command(obj =>
+            RegistrationCommand = new Command(async obj =>
             {
                 object[] objects = (obj as object[]);
                 string name = objects[0].ToString();
@@ -39,27 +35,21 @@ namespace MAUI1.Client.Registration
                 if (Regex.IsMatch(email, @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
 @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$", RegexOptions.IgnoreCase))
                 {
-                    //TODO:проверка на суещствование зареганного емейла
-                    //TODO:проверка существования почты
-                    if (!Clients.Any(item => item.Email.Equals(email)))
-                    {
-                        isEmailValid = true;
-                    }
+                    isEmailValid = true;
                 }
                 if (password.Equals(passwordConf))
                 {
+                    //TODO: проверка на парольчик
                     isPasswordValid = true;
                 }
                 if(Regex.IsMatch(number, "[7-8]{1}[0-9]{10}", RegexOptions.IgnoreCase))
                 {
-                    if (!Clients.Any(item => item.Number.Equals(number)))
-                    {
-                        isNumberValid = true;
-                    }
+                    isNumberValid = true;
                 }
                 if(isEmailValid && isPasswordValid && isNumberValid)
                 {
-                    TCPCLient.SendQueryToServer(new string[] { name, number, email, password, "END"});
+                    var response = await MAUI1.TCPCLient.SendQueryToServer(new string[] {"REGADD", name, number, email, password, "END"});
+                    //TODO: написать что регистрация прошла успешна и попросить залогиниться если 1, если 0 то хз пока
                 }
             });
         }

@@ -4,7 +4,9 @@
              x:Class="MAUI1.Client.ClientLoginPage"
              xmlns:log="clr-namespace:MAUI1.Client.Login"
              xmlns:mconv="clr-namespace:MAUI1.Converters"
-              Background="#212121">
+             Title="Chel"
+             NavigationPage.HasBackButton="True"
+             NavigationPage.BackButtonTitle="True" >
     
     <ContentPage.BindingContext>
         <log:ClientLoginViewModel></log:ClientLoginViewModel>
@@ -24,46 +26,39 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
+    
     <Grid VerticalOptions="Fill">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="0.5*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Row="1" VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions >
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Label Text="Номер телефона" TextColor="Lavender" Grid.Row="0" Style="{x:StaticResource}"></Label>
-                <Entry x:Name="Login"  BackgroundColor="Lavender" FontSize="14" Grid.Row="1"  Text="dada3"/>
-            </Grid>
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions >
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Label Text="Пароль" Grid.Row="0" TextColor="Lavender" Style="{StaticResource LabelStyle}"></Label>
-                <Entry x:Name="Password" BackgroundColor="Lavender" FontSize="14" Grid.Row="1"  Text="dada3"/>
-            </Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+            <Label Text="Номер телефона" TextColor="Lavender"  Style="{x:StaticResource}"></Label>
+            <Border BackgroundColor="Lavender">
+                <Entry x:Name="Login"  BackgroundColor="Black" FontSize="14" Text="dada3"></Entry>
+            </Border>
+            <Label Text="Пароль" Grid.Row="0" TextColor="Lavender" Style="{StaticResource LabelStyle}"></Label>
+
+            <Border BackgroundColor="Lavender">
+                <Entry x:Name="Password" BackgroundColor="Black" FontSize="14" Grid.Row="1"  Text="dada3"/>
+            </Border>
+            <Button Grid.Row="2" Grid.Column="1"  VerticalOptions="StartAndExpand" Margin="0,20,0,0" BackgroundColor="Lavender" TextColor="Black" Command="{Binding LoginCommand}" Text="Войти">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource RConverter}">
+                        <Binding Source="{x:Reference Login}" Path="Text"></Binding>
+                        <Binding Source="{x:Reference Password}" Path="Text"></Binding>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+           
+        </VerticalStackLayout>
+        
         </Grid>
-        <Button Grid.Row="2" Grid.Column="1" HeightRequest="50" VerticalOptions="StartAndExpand" Margin="0,20,0,0" BackgroundColor="Lavender" TextColor="Black"   Text="Войти">
-            <Button.CommandParameter>
-                <MultiBinding Converter="{StaticResource RConverter}">
-                    <Binding Source="{x:Reference Login}" Path="Text"></Binding>
-                    <Binding Source="{x:Reference Password}" Path="Text"></Binding>
-                </MultiBinding>
-            </Button.CommandParameter>
-        </Button>
-    </Grid>
 </ContentPage>
