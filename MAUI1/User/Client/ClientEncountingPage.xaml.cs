@@ -1,4 +1,4 @@
-namespace MAUI1.Client;
+namespace MAUI1.User.Client;
 
 public partial class ClientEncountingPage : ContentPage
 {

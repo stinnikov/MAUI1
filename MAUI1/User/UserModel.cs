@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUI1
+namespace MAUI1.User
 {
-    public abstract class User : INotifyPropertyChanged
+    public abstract class UserModel : INotifyPropertyChanged
     {
         public int Id { get; set; }
         private string _name;

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MAUI1.Client.Login
+namespace MAUI1.User.Login
 {
-    internal class ClientLoginViewModel
+    internal class LoginViewModel
     {
         public ICommand LoginCommand { get; set; }
-        public ClientLoginViewModel() 
+        public LoginViewModel() 
         {
             LoginCommand = new Command( async data =>
             {

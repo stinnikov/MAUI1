@@ -8,13 +8,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MAUI1.Client.Registration
+namespace MAUI1.User.Registration
 {
-    internal class ClientRegistrationViewModel
+    internal class UserRegistrationViewModel
     {
         //public RegistrationContext registrationContext = new();
         public ICommand RegistrationCommand { get; set; }
-        public ClientRegistrationViewModel()
+        public UserRegistrationViewModel()
         {
             Linker.ViewModels.Add(this);
             RegistrationCommand = new Command(async obj =>
@@ -48,7 +48,7 @@ namespace MAUI1.Client.Registration
                 }
                 if(isEmailValid && isPasswordValid && isNumberValid)
                 {
-                    var response = await MAUI1.TCPCLient.SendQueryToServer(new string[] {"REGADD", name, number, email, password, "END"});
+                   var response = await MAUI1.TCPCLient.SendQueryToServer(new string[] {"REGADD", name, number, email, password, "END"}, 8888, "192.168.0.36");
                     //TODO: написать что регистрация прошла успешна и попросить залогиниться если 1, если 0 то хз пока
                 }
             });

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUI1.Client.Registration
+namespace MAUI1.User.Registration
 {
     class RegistrationContext:DbContext
     {
-        string sqlitePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),@"Chel");
-        public DbSet<ClientUser> Clients { get; set; } = null!;
+        string sqlitePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),@"MAUI//MAUI1");
+        public DbSet<MAUI1.User.Client.ClientUser> Clients { get; set; } = null!;
         //public DbSet<DriverUser> Drivers { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -18,8 +18,8 @@ namespace MAUI1.Client.Registration
         }
         public RegistrationContext()
         {
-            Directory.CreateDirectory(sqlitePath);
             sqlitePath = Path.Combine(sqlitePath, "chel.db");
+            Directory.CreateDirectory(sqlitePath);
             try
             {
                 Database.EnsureDeleted();

@@ -5,26 +5,26 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
-namespace MAUI1.Client
+namespace MAUI1.User.Driver
 {
-    internal class ClientViewModel : INotifyPropertyChanged
+    internal class DriverModel : UserModel, INotifyPropertyChanged
     {
-        public ICommand PageCommand { get; set; }
-        
+        private Order _order;
+        public Order Order { get { return _order; } set { if (value != null) { _order = value; OnPropertyChanged("Order"); } } }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-        public ClientViewModel()
+        public DriverModel()
         {
-            PageCommand = new Command(obj => 
-            { 
-                Shell.Current.GoToAsync("//ClientAccount");
-            });
+
+        }
+        public DriverModel(Order order)
+        {
+            Order = order;
         }
     }
 }

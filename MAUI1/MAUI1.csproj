@@ -54,6 +54,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="User\Login\LoginPage.xaml.cs">
+	    <DependentUpon>LoginPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="User\Registration\RegistrationPage.xaml.cs">
+	    <DependentUpon>RegistrationPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Client\ClientEncountingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

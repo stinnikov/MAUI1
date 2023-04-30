@@ -1,4 +1,4 @@
-namespace MAUI1.Driver;
+namespace MAUI1.User.Driver;
 
 public partial class DriverPage : ContentPage
 {

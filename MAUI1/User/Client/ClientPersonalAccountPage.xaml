@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI1.User.Client.ClientPersonalAccountPage"
+             Title="ClientPersonalAccountPage"
+             
+             >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="1" Grid.Row="1">
+            <Image Source="C:\Users\XE\Desktop\me4tayu.jpg"></Image>
+            <Entry Text="ИСКАТЬ"></Entry>
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Start">
+            <Button  ImageSource="C:\Users\XE\Desktop\4elik.png"></Button>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>

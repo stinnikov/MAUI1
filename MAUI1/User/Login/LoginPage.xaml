@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MAUI1.Client.ClientLoginPage"
-             xmlns:log="clr-namespace:MAUI1.Client.Login"
+             x:Class="MAUI1.User.Login.LoginPage"
+             xmlns:log="clr-namespace:MAUI1.User.Login"
              xmlns:mconv="clr-namespace:MAUI1.Converters"
-             Title="Chel"
-             NavigationPage.HasBackButton="True"
-             NavigationPage.BackButtonTitle="True" >
+             Title="Chel" >
     
     <ContentPage.BindingContext>
-        <log:ClientLoginViewModel></log:ClientLoginViewModel>
+        <log:LoginViewModel></log:LoginViewModel>
     </ContentPage.BindingContext>
     <ContentPage.Resources>
 
@@ -30,7 +28,8 @@
     <Grid VerticalOptions="Fill">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -40,7 +39,7 @@
             </Grid.ColumnDefinitions>
             
             <VerticalStackLayout Grid.Row="1" Grid.Column="1">
-            <Label Text="Номер телефона" TextColor="Lavender"  Style="{x:StaticResource}"></Label>
+            <Label Text="Номер телефона" TextColor="Lavender"  Style="{x:StaticResource LabelStyle}"></Label>
             <Border BackgroundColor="Lavender">
                 <Entry x:Name="Login"  BackgroundColor="Black" FontSize="14" Text="dada3"></Entry>
             </Border>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MAUI1.Client.ClientRegistrationPage"
-             xmlns:reg="clr-namespace:MAUI1.Client.Registration"
+             x:Class="MAUI1.User.Registration.UserRegistrationPage"
+             xmlns:reg="clr-namespace:MAUI1.User.Registration"
              xmlns:mconv="clr-namespace:MAUI1.Converters"
              Title="ClientRegistrationPage" >
              
     <ContentPage.BindingContext>
-        <reg:ClientRegistrationViewModel></reg:ClientRegistrationViewModel>
+        <reg:UserRegistrationViewModel></reg:UserRegistrationViewModel>
     </ContentPage.BindingContext>
     <ContentPage.Resources>
         
@@ -41,22 +41,22 @@
                 <Border BackgroundColor="Lavender">
                     <Entry  x:Name="UserName" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14" Text="shamil"/>
                 </Border>
-                
+
                 <Label Text="Номер телефона" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="Number" BackgroundColor="Black" FontSize="14"  Text="89130581262"/>
                 </Border>
-                
+
                 <Label Text="Email" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="Email" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14"   Text="shamiltinnikov@gmail.com"/>
                 </Border>
-                
+
                 <Label Text="Пароль" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="Password" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14"  Text="dada3"/>
                 </Border>
-                
+
                 <Label Text="Потвердите пароль" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="PasswordConf" Text="dada3" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14"  />
@@ -75,9 +75,6 @@
                 </Button>
 
             </VerticalStackLayout>
-        </ScrollView>
-        <ScrollView Grid.Row="2" Grid.Column="2">
-            <ListView ItemsSource="{Binding Cheliks}"></ListView>
         </ScrollView>
     </Grid>
 
