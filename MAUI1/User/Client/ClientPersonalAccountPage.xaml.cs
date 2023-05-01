@@ -7,5 +7,7 @@ public partial class ClientPersonalAccountPage : ContentPage
 	{
 		
 		InitializeComponent();
+		MapController mc = new MapController(mapView);
+		this.BindingContext = mc;
 	}
 }

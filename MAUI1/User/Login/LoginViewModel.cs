@@ -14,14 +14,15 @@ namespace MAUI1.User.Login
         {
             LoginCommand = new Command( async data =>
             {
-                object[] entries = (data as object[]);
-                string number = entries[0].ToString();
-                string password = entries[1].ToString();
-                string response = await TCPCLient.SendQueryToServer(new string[] { "LOGIN", number, password, "END" });
-                if(response == "1")
-                {
-                    await Shell.Current.GoToAsync("//ClientAccount");
-                }
+                //object[] entries = (data as object[]);
+                //string number = entries[0].ToString();
+                //string password = entries[1].ToString();
+                //string response = await TCPCLient.SendQueryToServer(new string[] { "LOGIN", number, password, "END" });
+                //if(response == "1")
+                //{
+                //    await Shell.Current.GoToAsync("//ClientAccount");
+                //}
+                Application.Current.MainPage = new AppShell();
                 //TODO:замутить логин
             });
         }
