@@ -24,40 +24,33 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
-    <Grid VerticalOptions="Fill">
+    <Border>
+        <Grid VerticalOptions="Fill">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            
-            <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="1.6*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Text="Login" Grid.Column="1" FontSize="32" HorizontalOptions="Start" VerticalOptions="End"></Label>
+        <VerticalStackLayout Grid.Row="1" Grid.Column="1">
             <Label Text="Номер телефона" TextColor="Lavender"  Style="{x:StaticResource LabelStyle}"></Label>
             <Border BackgroundColor="Lavender">
-                <Entry x:Name="Login"  BackgroundColor="Black" FontSize="14" Text="dada3"></Entry>
+                <Entry x:Name="Login"  BackgroundColor="Black" FontSize="14" Placeholder="Введите логин" Text="{Binding LoginInputs.Number}"></Entry>
             </Border>
             <Label Text="Пароль" Grid.Row="0" TextColor="Lavender" Style="{StaticResource LabelStyle}"></Label>
 
             <Border BackgroundColor="Lavender">
-                <Entry x:Name="Password" BackgroundColor="Black" FontSize="14" Grid.Row="1"  Text="dada3"/>
+                <Entry x:Name="Password" BackgroundColor="Black" FontSize="14" Placeholder="Введите пароль" Text="{Binding LoginInputs.Password}"/>
             </Border>
             <Button Grid.Row="2" Grid.Column="1"  VerticalOptions="StartAndExpand" Margin="0,20,0,0" BackgroundColor="Lavender" TextColor="Black" Command="{Binding LoginCommand}" Text="Войти">
-                <Button.CommandParameter>
-                    <MultiBinding Converter="{StaticResource RConverter}">
-                        <Binding Source="{x:Reference Login}" Path="Text"></Binding>
-                        <Binding Source="{x:Reference Password}" Path="Text"></Binding>
-                    </MultiBinding>
-                </Button.CommandParameter>
             </Button>
-           
         </VerticalStackLayout>
-        
-        </Grid>
+    </Grid>
+    </Border>
 </ContentPage>

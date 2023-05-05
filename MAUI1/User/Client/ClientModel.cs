@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace MAUI1.User.Client
 {
-    internal class ClientUser : UserModel, INotifyPropertyChanged
+    internal class ClientModel : UserModel, INotifyPropertyChanged
     {
-        public ClientUser() { }
-        public ClientUser(string name, string number, string email, string password ) 
+        public ClientModel() { }
+        public ClientModel(string name, string number, string email, string password ) 
         {
             Name = name;
             Number = number;

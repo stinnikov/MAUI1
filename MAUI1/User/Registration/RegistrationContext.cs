@@ -10,7 +10,7 @@ namespace MAUI1.User.Registration
     class RegistrationContext:DbContext
     {
         string sqlitePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),@"MAUI//MAUI1");
-        public DbSet<MAUI1.User.Client.ClientUser> Clients { get; set; } = null!;
+        public DbSet<MAUI1.User.Client.ClientModel> Clients { get; set; } = null!;
         //public DbSet<DriverUser> Drivers { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
              x:Class="MAUI1.User.Driver.DriverPage"
              xmlns:driver="clr-namespace:MAUI1.User.Driver"
              Title="DriverPage">
-    <ContentPage.BindingContext>
-        <driver:DriverAccountViewModel></driver:DriverAccountViewModel>
-    </ContentPage.BindingContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Grid.Column="1" Grid.Row="1">
-            <Image Source="C:\Users\XE\Desktop\me4tayu.jpg"></Image>
-            <Entry Text="ИСКАТЬ"></Entry>
-        </VerticalStackLayout>
-        <VerticalStackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" VerticalOptions="Start">
-            <Entry IsReadOnly="True" Text="{Binding Driver.Order.Price}"></Entry>
-            <Entry IsReadOnly="True" Text="{Binding Driver.Order.EndPoint}"></Entry>
-            <Entry IsReadOnly="True" TextColor="Lavender" Text="{Binding Driver.Order.StartPoint}"></Entry>
-        </VerticalStackLayout>
-
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="ava" Width="0.7*"></ColumnDefinition>
+                    <ColumnDefinition x:Name="address" Width="2*"></ColumnDefinition>
+                    <ColumnDefinition x:Name="price" Width="0.7*"></ColumnDefinition>
+                    <ColumnDefinition x:Name="otkaz" Width="0.6*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Text="ava" Command="{Binding camanda}" ImageSource="wt.png"></Button>
+                <Entry Grid.Column="1" Text="address" IsReadOnly="True"></Entry>
+                <Entry Grid.Column="2" Text="price" IsReadOnly="True"></Entry>
+                <Button Grid.Column="3" Text="otkaz" ImageSource="wt.png"></Button>
+            </Grid>
+        </Grid>
+        <mapsui:MapView x:Name="mapView" Grid.Row="1" Grid.Column="0"></mapsui:MapView>
+        <Grid Grid.RowSpan="2" Grid.Column="1">
+            <CollectionView HorizontalOptions="Center" VerticalOptions="Center" ItemsSource="{Binding Source='ORDERS'}"></CollectionView>
+        </Grid>
+        
     </Grid>
 </ContentPage>

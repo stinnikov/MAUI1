@@ -14,12 +14,12 @@
             </Grid>
         </DataTemplate>
     </Shell.FlyoutHeaderTemplate>-->
-    <FlyoutItem>
+    <!--<FlyoutItem>
         <Tab>
-        <ShellContent ContentTemplate="{DataTemplate cli:ClientPersonalAccountPage}" />
+            <ShellContent x:Name="Account" />
         </Tab>
-    </FlyoutItem>
-    <!--<FlyoutItem Title="Login">
+    </FlyoutItem>-->
+    <FlyoutItem Title="Login">
         <Tab>
             <ShellContent ContentTemplate="{DataTemplate log:LoginPage}" />
         </Tab>
@@ -28,7 +28,7 @@
         <Tab>
             <ShellContent ContentTemplate="{DataTemplate reg:UserRegistrationPage}" />
         </Tab>
-    </FlyoutItem>-->
+    </FlyoutItem>
     <!--<FlyoutItem Title="Login">
         <Tab >
             <ShellContent 

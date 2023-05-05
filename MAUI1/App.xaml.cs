@@ -6,7 +6,7 @@ public partial class App : Application
 	{
 	    InitializeComponent();
 
-		MainPage = new MAUI1.User.Login.LoginPage();
+		MainPage = new AppShell("");
         string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), @"MAUI//MAUI1");
         Directory.CreateDirectory(path);
     }

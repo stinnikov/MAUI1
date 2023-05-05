@@ -18,7 +18,7 @@ namespace MAUI1.User
 {
     internal class MapController
     {
-        private MapView mapView { get; set; }
+        internal MapView mapView { get; set; }
         public ICommand ButtonCommand { get; set; }
         private Location _location = new();
         public Location Location { get { return _location; } set { if (value != null) { _location = value; } } }
@@ -281,7 +281,7 @@ namespace MAUI1.User
         #endregion
         private async void Mapview_MapClicked(object sender, MapClickedEventArgs e)
         {
-            if (mapView.Pins.Count == 0)
+            if (mapView.Pins.Count >= 0)
             {
                 var p = e.Point;
                 try
@@ -292,8 +292,9 @@ namespace MAUI1.User
                     {
                         Position = new Mapsui.UI.Maui.Position(e.Point),
                         Type = PinType.Pin,
-                        Label = $"{placemark.AdminArea}, {placemark.SubAdminArea}, {placemark.Locality}, {placemark.Thoroughfare}, {placemark.SubThoroughfare}",
-                        Address = placemark.Locality + " " + placemark.SubLocality,
+                        Label = $"{e.Point.Latitude},{e.Point.Longitude}",
+                        //Label = $"{placemark?.AdminArea}, {placemark?.SubAdminArea}, {placemark?.Locality}, {placemark?.Thoroughfare}, {placemark?.SubThoroughfare}",
+                        Address = placemark?.Locality + " " + placemark?.SubLocality,
                         Scale = 0.7F,
                         Color = Colors.Red,
                     };
@@ -308,8 +309,8 @@ namespace MAUI1.User
                     return;
                 }
             }
-            mapView.Pins.ToList().ForEach(item => item.HideCallout());
-            mapView.Pins.Clear();
+            //mapView.Pins.ToList().ForEach(item => item.HideCallout());
+            //mapView.Pins.Clear();
         }
         private void PinTimerInitialization(System.Timers.Timer timer, Mapsui.UI.Maui.Pin pin)
         {

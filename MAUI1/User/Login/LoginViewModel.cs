@@ -9,21 +9,33 @@ namespace MAUI1.User.Login
 {
     internal class LoginViewModel
     {
+        public LoginModel LoginInputs { get; set; }
         public ICommand LoginCommand { get; set; }
         public LoginViewModel() 
         {
-            LoginCommand = new Command( async data =>
+            LoginInputs = new LoginModel();
+            LoginCommand = new Command(async () =>
             {
-                //object[] entries = (data as object[]);
-                //string number = entries[0].ToString();
-                //string password = entries[1].ToString();
-                //string response = await TCPCLient.SendQueryToServer(new string[] { "LOGIN", number, password, "END" });
-                //if(response == "1")
+                int d = 1;
+                if(d == 1)
+                Application.Current.MainPage = new NavigationPage(new Dispatcher.TaxiDispatcherPage());
+                if(d == 0)
+                {
+                    Application.Current.MainPage = new NavigationPage(new User.Driver.DriverPage());
+                }
+                //List<string> response = await TCPCLient.SendQueryToServer(new string[] { "LOGIN", LoginInputs.Number, LoginInputs.Password, "END" });
+                //if (response != null)
                 //{
-                //    await Shell.Current.GoToAsync("//ClientAccount");
+                //    if (response[0] == "1")
+                //    {
+                //        Application.Current.MainPage = new AppShell(response[1]);
+                //    }
+                //    else
+                //    {
+                //        LoginInputs.Number = "";
+                //        LoginInputs.Password = "";
+                //    }
                 //}
-                Application.Current.MainPage = new AppShell();
-                //TODO:замутить логин
             });
         }
     }
