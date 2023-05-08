@@ -59,11 +59,10 @@ public partial class TaxiDispatcherPage : ContentPage
         ClientViewModel client2 = new() { Client = new(){Name = "Pacik_Client"} };
         UserPinData upin4 = new UserPinData(pin4, client2);
         List<UserPinData> pins = new List<UserPinData>() { upin1, upin2, upin3, upin4 };
-       
-        TaxiDispatcherViewModel dvm = new TaxiDispatcherViewModel(mapView, pins);
+
+        dvm.OrderMapController = new OrderMapController(mapView, pins);
         dvm.Collection.Add(client1);
         dvm.Collection.Add(client2);
-        this.BindingContext = dvm;
 	}
 
     private List<UserPinData> GetUserPinData()

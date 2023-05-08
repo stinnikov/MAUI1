@@ -14,6 +14,8 @@ namespace MAUI1.User.Registration
     {
         //public RegistrationContext registrationContext = new();
         public ICommand RegistrationCommand { get; set; }
+        public ICommand TestCommand { get; set; }
+        public ICommand TestCommand1 { get; set; }
         public UserRegistrationViewModel()
         {
             Linker.ViewModels.Add(this);
@@ -52,6 +54,8 @@ namespace MAUI1.User.Registration
                     //TODO: написать что регистрация прошла успешна и попросить залогиниться если 1, если 0 то хз пока
                 }
             });
+          
+
         }
     }
 }

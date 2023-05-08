@@ -10,7 +10,7 @@ using Mapsui.UI.Maui;
 
 namespace MAUI1.User.Driver
 {
-    internal class DriverViewModel : IUserViewModel
+    internal class DriverViewModel : UserVM
     {
         private MapController MapController { get; set; }
         public DriverModel Driver { get; set; } = new DriverModel();

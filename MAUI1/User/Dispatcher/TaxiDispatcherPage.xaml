@@ -5,16 +5,14 @@
              xmlns:local="clr-namespace:MAUI1.User.Dispatcher"
              x:Class="MAUI1.User.Dispatcher.TaxiDispatcherPage"
              Title="TaxiDispatcherPage">
+    <ContentPage.BindingContext>
+        <local:TaxiDispatcherViewModel x:Name="dvm"></local:TaxiDispatcherViewModel>
+    </ContentPage.BindingContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid.Resources>
-            <ResourceDictionary>
-                <Button x:Name="button1" x:Key="but1" Command="{Binding Komanda}"></Button>
-            </ResourceDictionary>
-        </Grid.Resources>
         <mapsui:MapView x:Name="mapView"></mapsui:MapView>
         <ListView x:Name="ClientList" Grid.Row="1" ItemsSource="{Binding Collection}">
             <ListView.ItemTemplate>

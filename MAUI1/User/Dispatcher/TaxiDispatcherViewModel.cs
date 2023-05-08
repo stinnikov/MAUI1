@@ -12,18 +12,17 @@ using System.Windows.Input;
 
 namespace MAUI1.User.Dispatcher
 {
-    internal class TaxiDispatcherViewModel : IUserViewModel 
+    internal class TaxiDispatcherViewModel : UserVM 
     {
         public ClientViewModel SelectedClientVM { get; set; }
         public OrderMapController OrderMapController { get; set; }
-        public ObservableCollection<ClientViewModel> Collection { get; private set; }
+        public ObservableCollection<ClientViewModel> Collection { get; private set; } = new ObservableCollection<ClientViewModel>();
         public ICommand AvatarClicked { get; set; } = new Command(() => { });
         public ICommand ShowClientPin { get; set; }
 
         public TaxiDispatcherViewModel(MapView mapview, List<UserPinData> pins)
         {
             OrderMapController = new(mapview, pins);
-            Collection = new ObservableCollection<ClientViewModel>();
             ShowClientPin = new Command(obj =>
             {
                 if(SelectedClientVM != null)
@@ -34,8 +33,21 @@ namespace MAUI1.User.Dispatcher
                 SelectedClientVM = (obj as ClientViewModel);
                 var clientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
                 clientPin.Pin.IsVisible = true;
+            }); 
+        }
+        public TaxiDispatcherViewModel()
+        {
+            ShowClientPin = new Command(obj =>
+            {
+                if (SelectedClientVM != null)
+                {
+                    var previousClientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
+                    previousClientPin.Pin.IsVisible = false;
+                }
+                SelectedClientVM = (obj as ClientViewModel);
+                var clientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
+                clientPin.Pin.IsVisible = true;
             });
-            
         }
     }
 }

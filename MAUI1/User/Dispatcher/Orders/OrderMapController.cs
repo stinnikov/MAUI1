@@ -14,8 +14,8 @@ namespace MAUI1.User.Dispatcher.Orders
     class UserPinData 
     {
         public Pin Pin { get; set; }
-        public IUserViewModel User { get; set; }
-        public UserPinData(Pin pin, IUserViewModel user)
+        public UserVM User { get; set; }
+        public UserPinData(Pin pin, UserVM user)
         {
             Pin = pin;
             User = user;
@@ -27,7 +27,7 @@ namespace MAUI1.User.Dispatcher.Orders
     }
     internal class OrderMapController : MapController
     {
-        public IUserViewModel SelectedPinUser { get; set; }
+        public UserVM SelectedPinUser { get; set; }
         public ObservableCollection<UserPinData> PinDataCollection { get; set; } = new();
         public OrderMapController(MapView mapview, List<UserPinData> pins) : base(mapview)
         {

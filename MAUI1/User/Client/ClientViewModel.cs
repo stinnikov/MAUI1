@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace MAUI1.User.Client
 {
-    internal class ClientViewModel : IUserViewModel,INotifyPropertyChanged
+    internal class ClientViewModel : UserVM,INotifyPropertyChanged
     {
         private MapController MapController;
         public ClientModel Client { get; set; }
@@ -34,14 +34,6 @@ namespace MAUI1.User.Client
         }
         public ClientViewModel()
         {
-            DataClicked = new Command(() =>
-            {
-
-            });
-            PageCommand = new Command(obj => 
-            { 
-                Shell.Current.GoToAsync("//ClientAccount");
-            });
         }
     }
 }

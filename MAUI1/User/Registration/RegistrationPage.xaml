@@ -73,7 +73,8 @@
                         </MultiBinding>
                     </Button.CommandParameter>
                 </Button>
-
+                <Button Text="Test" Command="{Binding TestCommand}"></Button>
+                <Button Text="ImgSend" Command="{Binding TestCommand1}"></Button>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
