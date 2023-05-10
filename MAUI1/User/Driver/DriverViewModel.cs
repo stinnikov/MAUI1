@@ -15,7 +15,6 @@ namespace MAUI1.User.Driver
         private MapController MapController { get; set; }
         public DriverModel Driver { get; set; } = new DriverModel();
         public ICommand camanda { get; set; }
-        public ICommand AvatarClicked { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public DriverViewModel(MapView mapview)
         {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MAUI1.User.Client;
+using MAUI1.User.Driver;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,36 +10,27 @@ using System.Threading.Tasks;
 
 namespace MAUI1.User.Dispatcher.Orders
 {
-    internal class OrderModel : INotifyPropertyChanged
+    internal class OrderModel
     {
-        private DateTime _startTime;
-        public int Id;
-        public DateTime startTime { get; set; } //дата начала заказа
-        public DateTime endTime { get; set; } //дата окончания заказа
-        public int Client_Id { get; set; } //идентификатор клиента
+        public int Id { get; set; }
+        public DateTime StartTime { get; set; } //дата начала заказа
+        public DateTime EndTime { get; set; } //дата окончания заказа
+        public ClientModel Client { get; set; } //идентификатор клиента
         public string StartPoint { get; set; } //начальная точка
         public string EndPoint { get; set; } //конечная точка
         public float Price { get; set; } //цена
         public string Status { get; set; } //статус заказа
-        public int Driver_Id { get; set; } //id виодителя который выполнил/яет заказ
+        public DriverModel Driver { get; set; } //id виодителя который выполнил/яет заказ
                                            //public string Tariff; //тариф
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
         public OrderModel()
         {
         }
-        public OrderModel(DateTime start_Time, int client_Id, string start, string end, float price, MAUI1.User.Driver.DriverModel driver)
+        public OrderModel(DateTime start_Time, string start, string end, float price)
         {
-            startTime = start_Time;
-            Client_Id = client_Id;
+            StartTime = start_Time;
             StartPoint = start;
             EndPoint = end;
             Price = price;
-            Driver_Id = driver.Id;
         }
     }
 }

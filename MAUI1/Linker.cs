@@ -16,10 +16,10 @@ namespace MAUI1
             ViewModels.CollectionChanged += ViewModels_CollectionChanged;
         }
 
-        private static void ViewModels_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private static void ViewModels_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
 
-            ObservableCollection<object>? vm;
+            ObservableCollection<object> vm;
             if (sender is not null)
             {
                 vm = sender as ObservableCollection<object>;

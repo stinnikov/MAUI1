@@ -37,7 +37,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Grid> <!-- сетка под Radio Buttons -->
+                <Grid Margin="5,0,0,0"> <!-- сетка под Radio Buttons -->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -95,17 +95,15 @@
                     </Grid.ColumnDefinitions>
                     
                     <Border>
-                        <Grid x:Name="dada">
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="0.8*"></ColumnDefinition>
                                 <!--номер_заказа ава имя номер_телефона емейл откуда куда ещё_чёто-->
-                                <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="2.5*"></ColumnDefinition>
                                 <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                 <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                 <ColumnDefinition Width="3*"></ColumnDefinition>
                                 <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
                             <Border>
@@ -113,40 +111,33 @@
                             </Border>
 
                             <Border Grid.Column="1">
-                                <Label Text="Аватар" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                            <Border Grid.Column="2">
                                 <Label Text="Имя пользователя" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="3">
+                            <Border Grid.Column="2">
                                 <Label Text="Телефон" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="4">
+                            <Border Grid.Column="3">
                                 <Label Text="Email" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="5">
+                            <Border Grid.Column="4">
                                 <Label Text="Адрес отправки" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="6">
+                            <Border Grid.Column="5">
                                 <Label Text="Адрес прибытия" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="7">
-                                <Label Text="Инфо" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
                         </Grid>
                     </Border> <!--Панель названий-->
                     
-                    <ListView x:Name="ClientList"
+                    <ListView x:Name="ClientOrderList"
                           Grid.Row="1"
                           Grid.Column="0"
-                          Header="Заказы:"
                           ItemsSource="{Binding Collection}"
+                          RowHeight="45"
                           SelectionMode="Single"
                           IsVisible="{Binding Source={x:Reference AllOrders}, Path=IsChecked}">
                         <ListView.Behaviors>
@@ -161,50 +152,69 @@
                                 <ViewCell>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
                                             <!--номер_заказа ава имя номер_телефона емейл откуда куда ещё_чёто-->
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
                                             <ColumnDefinition Width="2.5*"></ColumnDefinition>
                                             <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                             <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                             <ColumnDefinition Width="3*"></ColumnDefinition>
                                             <ColumnDefinition Width="3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="1" Source="{Binding ClientAvatarSource}" WidthRequest="30" HeightRequest="30" />
-                                        <Label Grid.Column="2" Text="{Binding ClientFullName}" VerticalTextAlignment="Center" Margin="5,0,0,0" />
+                                        <Label Grid.Column="1" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                        <Label Grid.Column="2" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="3" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="4" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="5" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-
-                    <VerticalStackLayout Grid.Column="0" Grid.Row="1" IsVisible="{Binding Source={x:Reference SelectedClientOrder}, Path=IsChecked}">
-                        <HorizontalStackLayout BindingContext="{Binding SelectedClientVM}">
-                            <Label Text="{Binding ClientFirstName}" VerticalTextAlignment="Center" Margin="5,0,0,0" />
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>
+                    <Grid Grid.Column="0" Grid.Row="1" 
+                          IsVisible="{Binding Source={x:Reference SelectedClientOrder}, Path=IsChecked}" 
+                          BindingContext="{Binding Source={x:Reference ClientOrderList}, Path=SelectedItem}"
+                          Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                        <!--номер_заказа имя номер_телефона емейл откуда куда ещё_чёто-->
+                        <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Label></Label>
+                        <Label Grid.Column="1" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                        <Label Grid.Column="2" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                        <Label Grid.Column="3" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                        <Label Grid.Column="4" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                        <Label Grid.Column="5" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                    </Grid>
 
                     <Border Grid.Column="1">
                         <Label Text="Инфо" Style="{StaticResource labelStyle}"></Label>
                     </Border>
                     
-                    <VerticalStackLayout Spacing="5" Grid.Row="1" Grid.Column="1">
-                        <HorizontalStackLayout Spacing="5">
+                    <VerticalStackLayout Spacing="5" Margin="5,0,0,0" Grid.Row="1" Grid.Column="1">
+                        
+                        <HorizontalStackLayout Spacing="5" Margin="0,5,0,0">
                             <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultClientColor}" Fill="{Binding DefaultClientColor}"></Ellipse>
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Клиент" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
+                        
                         <HorizontalStackLayout Spacing="5" IsVisible="{Binding IsAllClientsShownOnTheMap}">
                             <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultSelectedClientColor}" Fill="{Binding DefaultSelectedClientColor}"></Ellipse>
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Выбранный клиент" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
+                        
                         <HorizontalStackLayout Spacing="5">
                             <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultDriverColor}" Fill="{Binding DefaultDriverColor}"></Ellipse>
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Водитель" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
+                        
                     </VerticalStackLayout>
                 </Grid>
             </Grid>

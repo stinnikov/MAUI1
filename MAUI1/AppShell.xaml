@@ -7,6 +7,8 @@
     xmlns:cli="clr-namespace:MAUI1.User.Client"
     xmlns:log="clr-namespace:MAUI1.User.Login"
     xmlns:reg="clr-namespace:MAUI1.User.Registration">
+    <Shell.BindingContext>
+    </Shell.BindingContext>
     <!--<Shell.FlyoutHeaderTemplate>
         <DataTemplate>
             <Grid HeightRequest="48">
@@ -19,7 +21,7 @@
             <ShellContent x:Name="Account" />
         </Tab>
     </FlyoutItem>-->
-    <FlyoutItem Title="Login">
+    <FlyoutItem Title="Login" IsVisible="{Binding is}">
         <Tab>
             <ShellContent ContentTemplate="{DataTemplate log:LoginPage}" />
         </Tab>

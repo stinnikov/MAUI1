@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace MAUI1.User
 {
-    class UserVM : INotifyPropertyChanged
+    class UserVM : ViewModel, INotifyPropertyChanged
     {
         private ImageSource _selectedImage;
         //private ImageSource avatarImage;
@@ -23,12 +23,6 @@ namespace MAUI1.User
         {
             get { return _selectedImage; }
             set { _selectedImage = value; OnPropertyChanged("SelectedImage"); }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
         public UserVM()
         {

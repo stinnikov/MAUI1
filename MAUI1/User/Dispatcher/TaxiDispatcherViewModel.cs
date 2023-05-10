@@ -17,6 +17,7 @@ namespace MAUI1.User.Dispatcher
         public Color DefaultClientColor { get { return Colors.Red; } }
         public Color DefaultSelectedClientColor => Colors.DeepPink;
         public Color DefaultDriverColor { get { return Colors.SkyBlue; } }
+        public ObservableCollection<OrderViewModel> Collection { get; private set; } = new ObservableCollection<OrderViewModel>();
         private bool _isShownAllOrders = true;
         public bool IsShownAllOrders 
         {
@@ -92,7 +93,7 @@ namespace MAUI1.User.Dispatcher
                 }
             }
         }
-        public ObservableCollection<ClientViewModel> Collection { get; private set; } = new ObservableCollection<ClientViewModel>();
+       
         public ICommand ShowClientPinCommand { get; set; }
         public ICommand ClientOrderSelectedCommand { get; set; }
         public ICommand DriversOnTheMapShowCheckedChangedCommand { get; set; }
@@ -115,7 +116,8 @@ namespace MAUI1.User.Dispatcher
             });
             ClientOrderSelectedCommand = new Command(obj =>
             {
-                ShowClientPin(obj as UserVM);
+                var clientVM = (obj as OrderViewModel).ClientVM;
+                ShowClientPin(clientVM);
                 IsShownAllOrders = !IsShownAllOrders;
             });
             DriversOnTheMapShowCheckedChangedCommand = new Command(() =>

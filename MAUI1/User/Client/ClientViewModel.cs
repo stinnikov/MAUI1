@@ -1,4 +1,5 @@
 ﻿using Mapsui.UI.Maui;
+using MAUI1.User.Dispatcher.Orders;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,10 +15,11 @@ namespace MAUI1.User.Client
     {
         private MapController MapController;
         public ClientModel Client { get; set; }
+        public OrderViewModel ClientOrder { get; set; }
         public string ClientFirstName
         {
             get => Client.FirstName ?? "Имя";
-            set
+            private set
             {
                 if (IsNameValid(value))
                 {
@@ -29,22 +31,24 @@ namespace MAUI1.User.Client
         public string ClientLastName
         {
             get => Client.LastName ?? "Фамилия";
-            set
+            private set
             {
                 if (IsNameValid(value))
                 {
                     Client.LastName = value;
+                    OnPropertyChanged("ClientLastName");
                 }
             }
         }
         public string ClientPatronymic
         {
             get => Client.Patronymic ?? "Отчество";
-            set
+            private set
             {
                 if (IsNameValid(value))
                 {
                     Client.Patronymic = value;
+                    OnPropertyChanged("ClientPatronymic");
                 }
             }
         }
@@ -55,13 +59,24 @@ namespace MAUI1.User.Client
                 return $"{this.ClientFirstName} {this.ClientLastName} {this.ClientPatronymic}";
             }
         }
+        public string ClientPhoneNumber
+        {
+            get => Client.PhoneNumber;
+            private set
+            {
+                //TODO:проверка телефона клиента
+                Client.PhoneNumber = value;
+                OnPropertyChanged("ClientPhoneNumber");
+            }
+        }
         public string ClientEmail
         {
             get => Client.Email ?? "Email";
-            set
+            private set
             {
                 //TODO:проверка емейла
                 Client.Email = value;
+                OnPropertyChanged("ClientEmail");
             }
         }
         
