@@ -18,6 +18,7 @@ namespace MAUI1.User
 {
     internal class MapController
     {
+        public bool IsMapClickable = true;
         internal MapView mapView { get; set; }
         public ICommand ButtonCommand { get; set; }
         private Location _location = new();
@@ -122,7 +123,10 @@ namespace MAUI1.User
                 ToggleGPS(true);
             }
             CreateButtons();
-            mapView.MapClicked += Mapview_MapClicked;
+            if (IsMapClickable)
+            {
+                mapView.MapClicked += Mapview_MapClicked;
+            }
             mapView.SizeChanged += UpdateButtons;
             mapView.Refresh();
         }
@@ -281,36 +285,38 @@ namespace MAUI1.User
         #endregion
         private async void Mapview_MapClicked(object sender, MapClickedEventArgs e)
         {
-            if (mapView.Pins.Count >= 0)
+            if (IsMapClickable)
             {
-                var p = e.Point;
-                try
+                if (mapView.Pins.Count >= 0)
                 {
-                    IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(e.Point.Latitude, e.Point.Longitude);
-                    Placemark placemark = placemarks?.FirstOrDefault();
-                    var pin = new Pin(mapView)
+                    var p = e.Point;
+                    try
                     {
-                        Position = new Mapsui.UI.Maui.Position(e.Point),
-                        Type = PinType.Pin,
-                        Label = $"{e.Point.Latitude},{e.Point.Longitude}",
-                        //Label = $"{placemark?.AdminArea}, {placemark?.SubAdminArea}, {placemark?.Locality}, {placemark?.Thoroughfare}, {placemark?.SubThoroughfare}",
-                        Address = placemark?.Locality + " " + placemark?.SubLocality,
-                        Scale = 0.7F,
-                        Color = Colors.Red,
-                    };
-                    mapView.Pins.Add(pin);
-                    System.Timers.Timer timer = new System.Timers.Timer();
-                    PinTimerInitialization(timer, pin);
-                    pin.ShowCallout();
-                    return;
+                        IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(e.Point.Latitude, e.Point.Longitude);
+                        Placemark placemark = placemarks?.FirstOrDefault();
+                        var pin = new Pin(mapView)
+                        {
+                            Position = new Mapsui.UI.Maui.Position(e.Point),
+                            Type = PinType.Pin,
+                            Label = $"{placemark?.AdminArea}, {placemark?.SubAdminArea}, {placemark?.Locality}, {placemark?.Thoroughfare}, {placemark?.SubThoroughfare}",
+                            Address = placemark?.Locality + " " + placemark?.SubLocality,
+                            Scale = 0.7F,
+                            Color = Colors.Red,
+                        };
+                        mapView.Pins.Add(pin);
+                        System.Timers.Timer timer = new System.Timers.Timer();
+                        PinTimerInitialization(timer, pin);
+                        pin.ShowCallout();
+                        return;
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
-                catch
-                {
-                    return;
-                }
+                mapView.Pins.ToList().ForEach(item => item.HideCallout());
+                mapView.Pins.Clear();
             }
-            //mapView.Pins.ToList().ForEach(item => item.HideCallout());
-            //mapView.Pins.Clear();
         }
         private void PinTimerInitialization(System.Timers.Timer timer, Mapsui.UI.Maui.Pin pin)
         {

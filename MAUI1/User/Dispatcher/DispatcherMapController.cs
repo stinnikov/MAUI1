@@ -25,11 +25,11 @@ namespace MAUI1.User.Dispatcher.Orders
 
         }
     }
-    internal class OrderMapController : MapController
+    internal class DispatcherMapController : MapController
     {
         public UserVM SelectedPinUser { get; set; }
-        public ObservableCollection<UserPinData> PinDataCollection { get; set; } = new();
-        public OrderMapController(MapView mapview, List<UserPinData> pins) : base(mapview)
+        public ObservableCollection<UserPinData> UserPinDataCollection { get; set; } = new();
+        public DispatcherMapController(MapView mapview, List<UserPinData> pins) : base(mapview)
         {
             foreach(var pin in pins)
             {
@@ -37,7 +37,7 @@ namespace MAUI1.User.Dispatcher.Orders
                 {
                     pin.Pin.IsVisible = false;
                 }
-                PinDataCollection.Add(pin);
+                UserPinDataCollection.Add(pin);
                 this.mapView.Pins.Add(pin.Pin);
             }
             mapView.RefreshGraphics();
@@ -48,7 +48,7 @@ namespace MAUI1.User.Dispatcher.Orders
         {
             var smc = SphericalMercator.FromLonLat(e.Pin.Position.Longitude, e.Pin.Position.Latitude);
             mapView.Map.Navigator.CenterOnAndZoomTo(new Mapsui.MPoint(smc.x,smc.y), mapView.Map.Navigator.Resolutions[16]);
-            SelectedPinUser = PinDataCollection.Where(item => item.Pin == e.Pin).FirstOrDefault()?.User;
+            SelectedPinUser = UserPinDataCollection.Where(item => item.Pin == e.Pin).FirstOrDefault()?.User;
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -58,3 +58,4 @@ namespace MAUI1.User.Dispatcher.Orders
         }
     }
 }
+

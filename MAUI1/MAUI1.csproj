@@ -52,6 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
 	  <PackageReference Include="Geolocator.Plugin" Version="1.0.2" />
 	  <PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.11" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.4" />

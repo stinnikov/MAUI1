@@ -17,7 +17,7 @@ namespace MAUI1.User
         private ImageSource _selectedImage;
         //private ImageSource avatarImage;
         public ICommand SelectImageCommand { get; private set; }
-        public ICommand TestCommand { get; private set; }
+        public ICommand ReceiveImageCommand { get; private set; }
 
         public ImageSource SelectedImage
         {
@@ -38,10 +38,30 @@ namespace MAUI1.User
             {
                 ChooseImage();
             });
-            TestCommand = new Command(async () => { 
+            ReceiveImageCommand = new Command(async () => { 
                 await TCPCLient.ReceiveAvatar();
                 SetAvatar(personalFolderPath);
             });
+        }
+        public bool IsNameValid(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return false;
+            }
+
+            foreach (char c in name)
+            {
+                if (!char.IsLetter(c) && !char.IsWhiteSpace(c))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public void GetAvatar()
+        {
+            //TODO:получение аватара юзера
         }
         private void SetAvatar(string personalFolderPath)
         {
@@ -51,7 +71,7 @@ namespace MAUI1.User
                 SelectedImage = ImageSource.FromFile(avatarPath);
             }
         }
-        public async void ChooseImage()
+        private async void ChooseImage()
         {
             try
             {
@@ -67,7 +87,7 @@ namespace MAUI1.User
 
                 if (result != null)
                 {
-                    bool accepted = await Application.Current.MainPage.DisplayAlert("Confirmation", "Do you want to save this image as your avatar?", "Yes", "No");
+                    bool accepted = await Application.Current.MainPage.DisplayAlert("Confirmation", "Do you want to save this image as your avatar?", "Yes", "No", FlowDirection.MatchParent);
                     if (accepted)
                     {
                         SelectedImage = ImageSource.FromStream(() => result.OpenReadAsync().Result);

@@ -39,4 +39,8 @@ public partial class AppShell : Shell
         //}
         //IsLogged = true;
 	}
+    public AppShell()
+    {
+        InitializeComponent();
+    }
 }

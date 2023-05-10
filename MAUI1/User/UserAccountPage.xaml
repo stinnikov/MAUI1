@@ -10,6 +10,6 @@
     <VerticalStackLayout>
         <Button Text="SendImage" Command="{Binding SelectImageCommand}"></Button>
         <Image Source="{Binding SelectedImage}" HeightRequest="64" WidthRequest="64" Aspect="AspectFill" HorizontalOptions="Start"></Image>
-        <Button Text="ReceiveImage" Command="{Binding TestCommand}"></Button>
+        <Button Text="ReceiveImage" Command="{Binding ReceiveImageCommand}"></Button>
     </VerticalStackLayout>
 </ContentPage>

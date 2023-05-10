@@ -14,40 +14,170 @@ namespace MAUI1.User.Dispatcher
 {
     internal class TaxiDispatcherViewModel : UserVM 
     {
-        public ClientViewModel SelectedClientVM { get; set; }
-        public OrderMapController OrderMapController { get; set; }
+        public Color DefaultClientColor { get { return Colors.Red; } }
+        public Color DefaultSelectedClientColor => Colors.DeepPink;
+        public Color DefaultDriverColor { get { return Colors.SkyBlue; } }
+        private bool _isShownAllOrders = true;
+        public bool IsShownAllOrders 
+        {
+            get => _isShownAllOrders;
+            set
+            {
+                _isShownAllOrders = value;
+                OnPropertyChanged("IsShownAllOrders");
+            }
+        }
+        private bool _isDriversShownOnTheMap = true;
+        public bool IsDriversShownOnTheMap
+        {
+            get => _isDriversShownOnTheMap;
+            set
+            {
+                _isDriversShownOnTheMap = value;
+                OnPropertyChanged("IsDriversShownOnTheMap");
+            }
+        }
+        private bool _isAllClientsShownOnTheMap = false;
+        public bool IsAllClientsShownOnTheMap
+        {
+            get => _isAllClientsShownOnTheMap;
+            set
+            {
+                _isAllClientsShownOnTheMap = value;
+                if(value && SelectedClientVM != null)
+                {
+                    selectedClientPin.Color = DefaultSelectedClientColor;
+                }
+                else if(SelectedClientVM != null)
+                {
+                    selectedClientPin.Color = DefaultClientColor;
+                }
+                OnPropertyChanged("IsAllClientsShownOnTheMap");
+            }
+        }
+        private Mapsui.UI.Maui.Pin selectedClientPin;
+        private ClientViewModel _selectedClientVM;
+        public ClientViewModel SelectedClientVM 
+        { 
+            get { return _selectedClientVM; } 
+            set 
+            { 
+                if (value != null) 
+                { 
+                    _selectedClientVM = value;
+                    selectedClientPin = this.DispatcherMapController?.UserPinDataCollection?.Where(item => item.User == SelectedClientVM).FirstOrDefault()?.Pin;
+                    if (IsAllClientsShownOnTheMap)
+                    {
+                        selectedClientPin.Color = DefaultSelectedClientColor;
+                    }
+                    else
+                    {
+                        selectedClientPin.Color = DefaultClientColor;
+                    }
+                    OnPropertyChanged("SelectedClientVM"); 
+                }
+            } 
+        }
+        public DriverViewModel SelectedDriverVM { get; set; }
+        private DispatcherMapController _dispatcherMapController;
+        public DispatcherMapController DispatcherMapController
+        {
+            get => _dispatcherMapController;
+            set
+            {
+                if(value != null)
+                {
+                    _dispatcherMapController = value;
+                    _dispatcherMapController.IsMapClickable = false;
+                }
+            }
+        }
         public ObservableCollection<ClientViewModel> Collection { get; private set; } = new ObservableCollection<ClientViewModel>();
-        public ICommand AvatarClicked { get; set; } = new Command(() => { });
-        public ICommand ShowClientPin { get; set; }
-
+        public ICommand ShowClientPinCommand { get; set; }
+        public ICommand ClientOrderSelectedCommand { get; set; }
+        public ICommand DriversOnTheMapShowCheckedChangedCommand { get; set; }
+        public ICommand AllClientOnTheMapCheckedChangedCommand { get; set; }
         public TaxiDispatcherViewModel(MapView mapview, List<UserPinData> pins)
         {
-            OrderMapController = new(mapview, pins);
-            ShowClientPin = new Command(obj =>
-            {
-                if(SelectedClientVM != null)
-                {
-                    var previousClientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
-                    previousClientPin.Pin.IsVisible = false;
-                }
-                SelectedClientVM = (obj as ClientViewModel);
-                var clientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
-                clientPin.Pin.IsVisible = true;
-            }); 
+            DispatcherMapController = new(mapview, pins);
+            DispatcherVMInit();
         }
         public TaxiDispatcherViewModel()
         {
-            ShowClientPin = new Command(obj =>
+            DispatcherVMInit();
+            
+        }
+        private void DispatcherVMInit()
+        {
+            ShowClientPinCommand = new Command(obj =>
             {
-                if (SelectedClientVM != null)
+                ShowClientPin(obj as UserVM);
+            });
+            ClientOrderSelectedCommand = new Command(obj =>
+            {
+                ShowClientPin(obj as UserVM);
+                IsShownAllOrders = !IsShownAllOrders;
+            });
+            DriversOnTheMapShowCheckedChangedCommand = new Command(() =>
+            {
+                if (IsDriversShownOnTheMap)
                 {
-                    var previousClientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
-                    previousClientPin.Pin.IsVisible = false;
+                    foreach (var element in DispatcherMapController.UserPinDataCollection)
+                    {
+                        if (element.User.GetType() != typeof(DriverViewModel))
+                            continue;
+                        element.Pin.IsVisible = true;
+                    }
                 }
-                SelectedClientVM = (obj as ClientViewModel);
-                var clientPin = OrderMapController.PinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
-                clientPin.Pin.IsVisible = true;
+                else
+                {
+                    foreach (var element in DispatcherMapController.UserPinDataCollection)
+                    {
+                        if (element.User.GetType() != typeof(DriverViewModel))
+                            continue;
+                        element.Pin.IsVisible = false;
+                    }
+                }
+            });
+            AllClientOnTheMapCheckedChangedCommand = new Command(() =>
+            {
+                if(IsAllClientsShownOnTheMap)
+                {
+                    foreach(var element in DispatcherMapController.UserPinDataCollection)
+                    {
+                        if (element.User.GetType() != typeof(ClientViewModel))
+                            continue;
+                        element.Pin.IsVisible = true;
+                    }
+                }
+                else
+                {
+                    foreach (var element in DispatcherMapController.UserPinDataCollection)
+                    {
+                        if (element.User.GetType() != typeof(ClientViewModel))
+                            continue;
+                        if (element.User == SelectedClientVM)
+                        {
+                            continue;
+                        }
+                        element.Pin.IsVisible = false;
+                    }
+                }
             });
         }
+        private void ShowClientPin(UserVM userVM)
+        {
+            if (SelectedClientVM != null)
+            {
+                var previousClientPin = DispatcherMapController.UserPinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
+                previousClientPin.Pin.IsVisible = false;
+                previousClientPin.Pin.Color = DefaultClientColor;
+            }
+            SelectedClientVM = (ClientViewModel)userVM;
+            var clientPin = DispatcherMapController.UserPinDataCollection.Where(item => item.User == SelectedClientVM).FirstOrDefault();
+            clientPin.Pin.IsVisible = true;
+
+        }
+        
     }
 }
