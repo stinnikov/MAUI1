@@ -10,8 +10,16 @@ using System.Threading.Tasks;
 
 namespace MAUI1.User.Dispatcher.Orders
 {
+    public enum OrderStatus
+    {
+        Waiting,
+        InProgress,
+        Completed,
+        Cancelled
+    }
     internal class OrderModel
     {
+        
         public int Id { get; set; }
         public DateTime StartTime { get; set; } //дата начала заказа
         public DateTime EndTime { get; set; } //дата окончания заказа
@@ -19,7 +27,7 @@ namespace MAUI1.User.Dispatcher.Orders
         public string StartPoint { get; set; } //начальная точка
         public string EndPoint { get; set; } //конечная точка
         public float Price { get; set; } //цена
-        public string Status { get; set; } //статус заказа
+        public OrderStatus Status { get; set; } //статус заказа
         public DriverModel Driver { get; set; } //id виодителя который выполнил/яет заказ
                                            //public string Tariff; //тариф
         public OrderModel()

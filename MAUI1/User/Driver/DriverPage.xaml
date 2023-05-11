@@ -2,36 +2,93 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
+             xmlns:local="clr-namespace:MAUI1.User.Driver"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MAUI1.User.Driver.DriverPage"
-             xmlns:driver="clr-namespace:MAUI1.User.Driver"
              Title="DriverPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label" x:Key="labelStyle">
+                <Setter Property="FontSize" Value="16"></Setter>
+                <Setter Property="HorizontalOptions" Value="Center"></Setter>
+                <Setter Property="VerticalOptions" Value="Center"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="1.3*"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="0" Grid.Column="0">
+        <mapsui:MapView x:Name="mapView"></mapsui:MapView>
+        <Grid Grid.Row="1">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="ava" Width="0.7*"></ColumnDefinition>
-                    <ColumnDefinition x:Name="address" Width="2*"></ColumnDefinition>
-                    <ColumnDefinition x:Name="price" Width="0.7*"></ColumnDefinition>
-                    <ColumnDefinition x:Name="otkaz" Width="0.6*"></ColumnDefinition>
+                    <!--номер_заказа ава имя номер_телефона емейл откуда куда ещё_чёто-->
+                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Text="ava" Command="{Binding camanda}" ImageSource="wt.png"></Button>
-                <Entry Grid.Column="1" Text="address" IsReadOnly="True"></Entry>
-                <Entry Grid.Column="2" Text="price" IsReadOnly="True"></Entry>
-                <Button Grid.Column="3" Text="otkaz" ImageSource="wt.png"></Button>
+
+
+                <Border Grid.Column="0">
+                    <Label Text="Имя пользователя" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="1">
+                    <Label Text="Адрес отправки" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="2">
+                    <Label Text="Адрес прибытия" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="3">
+                    <Label Text="Цена" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="4">
+                    <Label Text="Статус" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
             </Grid>
         </Grid>
-        <mapsui:MapView x:Name="mapView" Grid.Row="1" Grid.Column="0"></mapsui:MapView>
-        <Grid Grid.RowSpan="2" Grid.Column="1">
-            <CollectionView HorizontalOptions="Center" VerticalOptions="Center" ItemsSource="{Binding Source='ORDERS'}"></CollectionView>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Margin="0,5,0,0">
+                <Grid.ColumnDefinitions>
+                    <!--имя откуда куда цена статус-->
+                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Text="{Binding DriverFullName}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                <Label Grid.Column="1" Text="{Binding DriverOrder.StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                <Label Grid.Column="2" Text="{Binding DriverOrder.EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                <Label Grid.Column="3" Text="{Binding DriverOrder.OrderPrice}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                <Label Grid.Column="4" Text="{Binding DriverOrder.OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+            </Grid>
+            <HorizontalStackLayout Grid.Row="1" Spacing="5" HorizontalOptions="Center">
+                <Button Text="Accept" HorizontalOptions="Center" Style="{StaticResource buttonStyle}"></Button>
+                <Button Text="Accept" Command="{Binding camanda}"></Button>
+            </HorizontalStackLayout>
         </Grid>
-        
+
     </Grid>
 </ContentPage>

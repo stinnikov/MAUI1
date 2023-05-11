@@ -56,7 +56,11 @@ namespace MAUI1.User.Client
         {
             get
             {
-                return $"{this.ClientFirstName} {this.ClientLastName} {this.ClientPatronymic}";
+                if (Client.Patronymic != "")
+                {
+                    return $"{this.ClientFirstName} {this.ClientLastName} {this.ClientPatronymic}";
+                }
+                return $"{this.ClientFirstName} {this.ClientLastName}";
             }
         }
         public string ClientPhoneNumber
@@ -79,7 +83,7 @@ namespace MAUI1.User.Client
                 OnPropertyChanged("ClientEmail");
             }
         }
-        
+        public int ClientAge => Client.Age;
         public ImageSource ClientAvatarSource
         {
            get {

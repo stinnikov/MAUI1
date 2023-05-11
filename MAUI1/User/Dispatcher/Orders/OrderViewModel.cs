@@ -43,6 +43,19 @@ namespace MAUI1.User.Dispatcher.Orders
                 }
             }
         }
+        public float OrderPrice
+        {
+            get => Order.Price;
+            private set
+            {
+                if(value >= 0)
+                {
+                    Order.Price = value;
+                    OnPropertyChanged("OrderPrice");
+                }
+            }
+        }
+        public string OrderStatus => Order.Status.ToString(); 
         public OrderViewModel(ClientViewModel clientVM, DriverViewModel driverVM, string startPoint, string endPoint)
         {
             ClientVM = clientVM;

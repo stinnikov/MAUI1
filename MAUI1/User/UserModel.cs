@@ -19,6 +19,13 @@ namespace MAUI1.User
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
         public DateTime Created { get; set; }
+        public int Age
+        {
+            get
+            {
+               return DateTime.Now.Year - DateOfBirth.Year;
+            }
+        }
 
         public UserModel(string firstName, string lastName, string patronymic, string phoneNumber)
         {
