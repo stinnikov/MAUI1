@@ -12,11 +12,94 @@ using System.Windows.Input;
 
 namespace MAUI1.User
 {
-    class UserVM : ViewModel, INotifyPropertyChanged
+    public class UserVM : ViewModel, INotifyPropertyChanged
     {
         private ImageSource _selectedImage;
+        public UserModel User { get; set; }
         //private ImageSource avatarImage;
+        public string UserFirstName
+        {
+            get => User?.FirstName ?? "Имя";
+            private set
+            {
+                if (IsNameValid(value))
+                {
+                    User.FirstName = value;
+                    OnPropertyChanged("UserFirstName");
+                }
+            }
+
+        }
+        public string UserLastName
+        {
+            get => User?.LastName ?? "Фамилия";
+            private set
+            {
+                if (IsNameValid(value))
+                {
+                    User.LastName = value;
+                    OnPropertyChanged("UserLastName");
+                }
+            }
+        }
+        public string UserPatronymic
+        {
+            get => User?.Patronymic ?? "Отчество";
+            private set
+            {
+                if (IsNameValid(value))
+                {
+                    User.Patronymic = value;
+                    OnPropertyChanged("UserPatronymic");
+                }
+            }
+        }
+        public string UserFullName
+        {
+            get
+            {
+                if (User?.Patronymic != null)
+                {
+                    return $"{this.UserFirstName} {this.UserLastName} {this.UserPatronymic}";
+                }
+                return $"{this.UserFirstName} {this.UserLastName}";
+            }
+        }
+        public string UserPhoneNumber
+        {
+            get => User?.PhoneNumber;
+            private set
+            {
+                //TODO:проверка телефона клиента
+                User.PhoneNumber = value;
+                OnPropertyChanged("UserPhoneNumber");
+            }
+        }
+        public string UserEmail
+        {
+            get => User?.Email ?? "Email";
+            private set
+            {
+                //TODO:проверка емейла
+                User.Email = value;
+                OnPropertyChanged("UserEmail");
+            }
+        }
+        public UserType UserAccountType
+        {
+            get => User.UserType;
+            private set
+            {
+                //TODO:проверка емейла
+                User.UserType = value;
+                OnPropertyChanged("UserEmail");
+            }
+        }
         public ICommand SelectImageCommand { get; private set; }
+        public ICommand AvatarClickedCommand { get; set; } = new Command(() => 
+        { 
+
+        });
         public ICommand ReceiveImageCommand { get; private set; }
 
         public ImageSource SelectedImage
@@ -36,6 +119,10 @@ namespace MAUI1.User
                 await TCPCLient.ReceiveAvatar();
                 SetAvatar(personalFolderPath);
             });
+        }
+        public UserVM(UserModel user)
+        {
+            User = user;
         }
         public bool IsNameValid(string name)
         {

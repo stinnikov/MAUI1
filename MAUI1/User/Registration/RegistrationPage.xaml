@@ -37,27 +37,42 @@
         </Grid.ColumnDefinitions>
         <ScrollView Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout>
-                <Label Text="Имя пользователя" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
+                <Label Text="Имя пользователя" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
-                    <Entry  x:Name="UserName" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14" Text="shamil"/>
+                    <Entry  x:Name="UserFirstName" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14" Text="shamil"/>
                 </Border>
 
-                <Label Text="Номер телефона" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
+                <Label Text="Фамилия" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
-                    <Entry x:Name="Number" BackgroundColor="Black" FontSize="14"  Text="89130581262"/>
+                    <Entry  x:Name="UserLastName" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14" Text="tinnikov"/>
                 </Border>
 
-                <Label Text="Email" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
+                <Label Text="Отчество" Style="{StaticResource LabelStyle}"></Label>
+                <Border BackgroundColor="Lavender">
+                    <Entry  x:Name="UserPatronymic" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14" Text="tinnikov"/>
+                </Border>
+
+                <Label Text="Номер телефона"  Style="{StaticResource LabelStyle}"></Label>
+                <Border BackgroundColor="Lavender">
+                    <Entry x:Name="PhoneNumber" BackgroundColor="Black" FontSize="14"  Text="89130581262"/>
+                </Border>
+
+                <Label Text="Введите дату вашего рождения"  Style="{StaticResource LabelStyle}"></Label>
+                <Border BackgroundColor="Lavender">
+                    <DatePicker x:Name="DateOfBirth" BackgroundColor="Black" FontSize="14"/>
+                </Border>
+
+                <Label Text="Email" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="Email" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14"   Text="shamiltinnikov@gmail.com"/>
                 </Border>
 
-                <Label Text="Пароль" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
+                <Label Text="Пароль" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="Password" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14"  Text="dada3"/>
                 </Border>
 
-                <Label Text="Потвердите пароль" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
+                <Label Text="Потвердите пароль" Style="{StaticResource LabelStyle}"></Label>
                 <Border BackgroundColor="Lavender">
                     <Entry x:Name="PasswordConf" Text="dada3" VerticalOptions="Fill" BackgroundColor="Black" FontSize="14"  />
                 </Border>
@@ -65,8 +80,11 @@
                 <Button  Margin="0,10,0,0" BackgroundColor="Lavender" TextColor="Black" HorizontalOptions="CenterAndExpand"  Command="{Binding RegistrationCommand}"  Text="Зарегистрироваться">
                     <Button.CommandParameter>
                         <MultiBinding Converter="{StaticResource RConverter}">
-                            <Binding Source="{x:Reference UserName}" Path="Text"></Binding>
-                            <Binding Source="{x:Reference Number}" Path="Text"></Binding>
+                            <Binding Source="{x:Reference UserFirstName}" Path="Text"></Binding>
+                            <Binding Source="{x:Reference UserLastName}" Path="Text"></Binding>
+                            <Binding Source="{x:Reference UserPatronymic}" Path="Text"></Binding>
+                            <Binding Source="{x:Reference PhoneNumber}" Path="Text"></Binding>
+                            <Binding Source="{x:Reference DateOfBirth}" Path="Date"></Binding>
                             <Binding Source="{x:Reference Email}" Path="Text"></Binding>
                             <Binding Source="{x:Reference Password}" Path="Text"></Binding>
                             <Binding Source="{x:Reference PasswordConf}" Path="Text"></Binding>
@@ -74,7 +92,7 @@
                     </Button.CommandParameter>
                 </Button>
                 <Button Text="Test" Command="{Binding TestCommand}"></Button>
-                <Button Text="ImgSend" Command="{Binding TestCommand1}"></Button>
+                <Button Text="Test1" Command="{Binding TestCommand1}"></Button>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

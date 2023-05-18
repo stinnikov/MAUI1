@@ -48,6 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\taxi.svg" />
 	  <None Remove="Resources\Images\wt.svg" />
 	</ItemGroup>
 
@@ -56,10 +57,14 @@
 	  <PackageReference Include="Geolocator.Plugin" Version="1.0.2" />
 	  <PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.11" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.4" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="OsmSharp" Version="6.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="User\Client\ClientPage.xaml.cs">
+	    <DependentUpon>ClientPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="User\Login\LoginPage.xaml.cs">
 	    <DependentUpon>LoginPage.xaml</DependentUpon>
 	  </Compile>
@@ -85,6 +90,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Driver\DriverPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="LoadingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="User\Admin\AdminPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="User\Dispatcher\Orders\OrderHandlerPage.xaml">

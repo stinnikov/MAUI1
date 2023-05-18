@@ -5,14 +5,22 @@
              xmlns:local="clr-namespace:MAUI1.User.Driver"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MAUI1.User.Driver.DriverPage"
-             Title="DriverPage">
-
+             Title="DriverPage"
+             
+             >
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label" x:Key="labelStyle">
                 <Setter Property="FontSize" Value="16"></Setter>
                 <Setter Property="HorizontalOptions" Value="Center"></Setter>
                 <Setter Property="VerticalOptions" Value="Center"></Setter>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+            </Style>
+            <Style TargetType="Border">
+                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -20,8 +28,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"/>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="1.3*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="1.5*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -43,7 +50,7 @@
 
 
                 <Border Grid.Column="0">
-                    <Label Text="Имя пользователя" Style="{StaticResource labelStyle}"></Label>
+                    <Label Text="Имя пользователя"  Style="{StaticResource labelStyle}"></Label>
                 </Border>
 
                 <Border Grid.Column="1">
@@ -67,9 +74,11 @@
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
-                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="45"></RowDefinition>
+                <RowDefinition Height="5"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Margin="0,5,0,0">
+
+            <Grid Margin="0,5,0,0" BindingContext="{Binding Order}">
                 <Grid.ColumnDefinitions>
                     <!--имя откуда куда цена статус-->
                     <ColumnDefinition Width="2.5*"></ColumnDefinition>
@@ -78,15 +87,78 @@
                     <ColumnDefinition Width="0.8*"></ColumnDefinition>
                     <ColumnDefinition Width="0.8*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Text="{Binding DriverFullName}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                <Label Grid.Column="1" Text="{Binding DriverOrder.StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                <Label Grid.Column="2" Text="{Binding DriverOrder.EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                <Label Grid.Column="3" Text="{Binding DriverOrder.OrderPrice}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                <Label Grid.Column="4" Text="{Binding DriverOrder.OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+
+                <HorizontalStackLayout Grid.Column="0" BindingContext="{Binding ClientVM}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Spacing="5">
+                    <toolkit:AvatarView BorderColor="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}" BorderWidth="0.73" ImageSource="{Binding AvatarSource}"></toolkit:AvatarView>
+                    <Label  Text="{Binding UserFullName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                </HorizontalStackLayout>
+
+                <Label Grid.Column="1" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                <Label Grid.Column="2" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                <Label Grid.Column="3" Text="{Binding OrderPrice}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                <Label Grid.Column="4" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+
             </Grid>
-            <HorizontalStackLayout Grid.Row="1" Spacing="5" HorizontalOptions="Center">
-                <Button Text="Accept" HorizontalOptions="Center" Style="{StaticResource buttonStyle}"></Button>
-                <Button Text="Accept" Command="{Binding camanda}"></Button>
+
+            <HorizontalStackLayout Grid.Row="1" Spacing="5" BindingContext="{Binding Order}" VerticalOptions="Start" HorizontalOptions="Center">
+                <Button Text="Принять" Command="{Binding AcceptOrderCommand}"  Style="{StaticResource buttonStyle}" WidthRequest="100">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Выполняется">
+                            <Setter Property="BackgroundColor" Value="ForestGreen"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён?">
+                            <Setter Property="BackgroundColor" Value="Gray"/>
+                            <Setter Property="IsEnabled" Value="False"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён">
+                            <Setter Property="BackgroundColor" Value="Gray"/>
+                            <Setter Property="IsEnabled" Value="False"></Setter>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+                <Button Text="Отказаться" Command="{Binding DeclineOrderCommand}" Style="{StaticResource buttonStyle}" WidthRequest="100">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Отменён">
+                            <Setter Property="BackgroundColor" Value="Red"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён?">
+                            <Setter Property="BackgroundColor" Value="Gray"/>
+                            <Setter Property="IsEnabled" Value="False"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён">
+                            <Setter Property="BackgroundColor" Value="Gray"/>
+                            <Setter Property="IsEnabled" Value="False"></Setter>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+                <HorizontalStackLayout IsVisible="False">
+                    <HorizontalStackLayout.Triggers>
+                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding OrderStatus}" Value="Выполняется">
+                            <Setter Property="IsVisible" Value="True"></Setter>
+                        </DataTrigger>
+                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding OrderStatus}" Value="Завершён?">
+                            <Setter Property="IsVisible" Value="True"></Setter>
+                        </DataTrigger>
+                    </HorizontalStackLayout.Triggers>
+                    <Button Text="Завершить" Command="{Binding CompleteWithQuestionMarkCommand}" Style="{StaticResource buttonStyle}" WidthRequest="100">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён?">
+                                <Setter Property="Text" Value="{Binding OrderStatus}"></Setter>
+                                <Setter Property="BackgroundColor" Value="Grey"></Setter>
+                                <Setter Property="IsEnabled" Value="False"></Setter>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <HorizontalStackLayout IsVisible="False">
+                        <HorizontalStackLayout.Triggers>
+                            <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding OrderStatus}" Value="Завершён?">
+                                <Setter Property="IsVisible" Value="True"></Setter>
+                             </DataTrigger>
+                        </HorizontalStackLayout.Triggers>
+                        <Button Text="DA" Command="{Binding CompleteOrderCommand}" BackgroundColor="ForestGreen" Style="{StaticResource buttonStyleWithTrigger}"></Button>
+                        <Button Text="NET" Command="{Binding UndoCompletionCommand}" BackgroundColor="Red" Style="{StaticResource buttonStyleWithTrigger}"></Button>
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
             </HorizontalStackLayout>
         </Grid>
 

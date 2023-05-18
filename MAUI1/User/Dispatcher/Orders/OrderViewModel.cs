@@ -1,24 +1,31 @@
 ﻿using Mapsui.UI.Maui;
 using MAUI1.User.Client;
 using MAUI1.User.Driver;
+using MAUI1.User.Dispatcher.Orders;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MAUI1.User.Dispatcher.Orders
 {
-    internal class OrderViewModel : ViewModel
+    public class OrderViewModel : ViewModel
     {
         public ClientViewModel ClientVM { get; }
         public DriverViewModel DriverVM { get; set; }
         public TaxiDispatcherModel Dispatcher { get; set; }
         public OrderModel Order { get; set; }
-        public string ClientName => ClientVM.ClientFullName;
-        public string ClientEmail => ClientVM.ClientEmail;
-        public string ClientPhone => ClientVM.ClientPhoneNumber;
+        public ICommand AcceptOrderCommand { get; set; }
+        public ICommand DeclineOrderCommand { get; set; }
+        public ICommand CompleteWithQuestionMarkCommand { get;set; }
+        public ICommand CompleteOrderCommand { get; set; }
+        public ICommand UndoCompletionCommand { get; set; }
+        public string ClientName => ClientVM.UserFirstName;
+        public string ClientEmail => ClientVM.UserEmail;
+        public string ClientPhone => ClientVM.UserPhoneNumber;
         public string StartingPoint
         {
             get => Order.StartPoint;
@@ -55,28 +62,65 @@ namespace MAUI1.User.Dispatcher.Orders
                 }
             }
         }
-        public string OrderStatus => Order.Status.ToString(); 
+        public string OrderStatus 
+        {
+            get
+            {
+                if (Order.Status == Orders.OrderStatus.Waiting)
+                {
+                    return "Ожидает";
+                }
+                else if(Order.Status == Orders.OrderStatus.InProgress)
+                {
+                    return "Выполняется";
+                }
+                else if(Order.Status == Orders.OrderStatus.CompletedWithQuestionMark)
+                {
+                    return "Завершён?";
+                }
+                else if(Order.Status == Orders.OrderStatus.Completed)
+                {
+                    return "Завершён";
+                }
+                else
+                {
+                    return "Отменён";
+                }
+            }
+        }
+            
         public OrderViewModel(ClientViewModel clientVM, DriverViewModel driverVM, string startPoint, string endPoint)
         {
             ClientVM = clientVM;
             DriverVM = driverVM;
             Order = new OrderModel()
             {
-                Client = clientVM.Client,
-                Driver = driverVM.Driver,
+                Client = clientVM.User,
+                Driver = driverVM.User,
                 StartPoint = startPoint,
                 EndPoint = endPoint
             };
+            AcceptOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
+            DeclineOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Cancelled; OnPropertyChanged("OrderStatus"); });
+            CompleteWithQuestionMarkCommand = new Command(() => { Order.Status = Orders.OrderStatus.CompletedWithQuestionMark; OnPropertyChanged("OrderStatus"); });
+            CompleteOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Completed; OnPropertyChanged("OrderStatus"); });
+            UndoCompletionCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
         }
         public OrderViewModel(ClientViewModel clientVM, string startPoint, string endPoint)
         {
             ClientVM = clientVM;
             Order = new OrderModel()
             {
-                Client = clientVM.Client,
+                Client = clientVM.User,
                 StartPoint = startPoint,
                 EndPoint = endPoint
             };
+            AcceptOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
+            DeclineOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Cancelled; OnPropertyChanged("OrderStatus"); });
+            CompleteWithQuestionMarkCommand = new Command(() => 
+            { Order.Status = Orders.OrderStatus.CompletedWithQuestionMark; OnPropertyChanged("OrderStatus"); });
+            CompleteOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Completed; OnPropertyChanged("OrderStatus"); });
+            UndoCompletionCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
         }
         public OrderViewModel()
         {

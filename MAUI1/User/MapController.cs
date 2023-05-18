@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace MAUI1.User
 {
-    internal class MapController
+    public class MapController
     {
         public bool IsMapClickable = true;
         internal MapView mapView { get; set; }

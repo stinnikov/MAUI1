@@ -14,21 +14,23 @@ namespace MAUI1.User.Dispatcher.Orders
     {
         Waiting,
         InProgress,
+        CompletedWithQuestionMark,
         Completed,
-        Cancelled
+        Cancelled,
+        PreCancelled,
     }
-    internal class OrderModel
+    public class OrderModel
     {
         
         public int Id { get; set; }
         public DateTime StartTime { get; set; } //дата начала заказа
         public DateTime EndTime { get; set; } //дата окончания заказа
-        public ClientModel Client { get; set; } //идентификатор клиента
+        public UserModel Client { get; set; } //идентификатор клиента
         public string StartPoint { get; set; } //начальная точка
         public string EndPoint { get; set; } //конечная точка
         public float Price { get; set; } //цена
         public OrderStatus Status { get; set; } //статус заказа
-        public DriverModel Driver { get; set; } //id виодителя который выполнил/яет заказ
+        public UserModel Driver { get; set; } //id виодителя который выполнил/яет заказ
                                            //public string Tariff; //тариф
         public OrderModel()
         {

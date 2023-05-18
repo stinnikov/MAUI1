@@ -8,11 +8,16 @@ using System.Threading.Tasks;
 
 namespace MAUI1.User.Client
 {
-    internal class ClientModel : UserModel
+    public class ClientModel : UserModel
     {
-        public ClientModel() { }
-        public ClientModel(string firstName, string lastName, string patronymic, string phoneNumber, string email, string password ) : base(firstName, lastName, patronymic, phoneNumber)
+        public ClientModel(string firstName, string lastName, string phoneNumber, string email, string password, UserType userType) : base(firstName, lastName, phoneNumber, email, password, userType)
         {
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            Email = email;
+            Password = password;
+            UserType = userType;
         }
     }
 }

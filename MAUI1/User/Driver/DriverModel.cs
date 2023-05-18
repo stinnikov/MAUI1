@@ -8,23 +8,16 @@ using System.Threading.Tasks;
 
 namespace MAUI1.User.Driver
 {
-    internal class DriverModel : UserModel, INotifyPropertyChanged
+    public class DriverModel : UserModel
     {
-        private Order _order;
-        public Order Order { get { return _order; } set { if (value != null) { _order = value; OnPropertyChanged("Order"); } } }
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        public DriverModel(string firstName, string lastName, string phoneNumber, string email, string password, UserType userType) : base(firstName, lastName, phoneNumber, email, password, userType)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-        public DriverModel()
-        {
-
-        }
-        public DriverModel(Order order)
-        {
-            Order = order;
+            FirstName = firstName;
+            LastName = lastName;
+            PhoneNumber = phoneNumber;
+            Email = email;
+            Password = password;
+            UserType = userType;
         }
     }
 }

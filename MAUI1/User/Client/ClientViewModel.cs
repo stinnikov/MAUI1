@@ -2,6 +2,7 @@
 using MAUI1.User.Dispatcher.Orders;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,80 +12,12 @@ using System.Windows.Input;
 
 namespace MAUI1.User.Client
 {
-    internal class ClientViewModel : UserVM
+    public class ClientViewModel : UserVM
     {
+        public ObservableCollection<string> dada { get; set; } = new ObservableCollection<string> { "dada","dada", "dada", "dada" };
         private MapController MapController;
-        public ClientModel Client { get; set; }
-        public OrderViewModel ClientOrder { get; set; }
-        public string ClientFirstName
-        {
-            get => Client.FirstName ?? "Имя";
-            private set
-            {
-                if (IsNameValid(value))
-                {
-                    Client.FirstName = value;
-                    OnPropertyChanged("ClientFirstName");
-                }
-            }
-        }
-        public string ClientLastName
-        {
-            get => Client.LastName ?? "Фамилия";
-            private set
-            {
-                if (IsNameValid(value))
-                {
-                    Client.LastName = value;
-                    OnPropertyChanged("ClientLastName");
-                }
-            }
-        }
-        public string ClientPatronymic
-        {
-            get => Client.Patronymic ?? "Отчество";
-            private set
-            {
-                if (IsNameValid(value))
-                {
-                    Client.Patronymic = value;
-                    OnPropertyChanged("ClientPatronymic");
-                }
-            }
-        }
-        public string ClientFullName
-        {
-            get
-            {
-                if (Client.Patronymic != "")
-                {
-                    return $"{this.ClientFirstName} {this.ClientLastName} {this.ClientPatronymic}";
-                }
-                return $"{this.ClientFirstName} {this.ClientLastName}";
-            }
-        }
-        public string ClientPhoneNumber
-        {
-            get => Client.PhoneNumber;
-            private set
-            {
-                //TODO:проверка телефона клиента
-                Client.PhoneNumber = value;
-                OnPropertyChanged("ClientPhoneNumber");
-            }
-        }
-        public string ClientEmail
-        {
-            get => Client.Email ?? "Email";
-            private set
-            {
-                //TODO:проверка емейла
-                Client.Email = value;
-                OnPropertyChanged("ClientEmail");
-            }
-        }
-        public int ClientAge => Client.Age;
-        public ImageSource ClientAvatarSource
+        public OrderViewModel Order { get; set; }
+        public ImageSource AvatarSource
         {
            get {
                 var avatarPath = $"{App.projectPersonalFolderPath}\\avatar.png";
@@ -99,14 +32,15 @@ namespace MAUI1.User.Client
                 }
            }
         }
-            
         
-
-        public ICommand PageCommand { get; set; }
-        public ICommand DataClicked { get; set; } 
-        public ClientViewModel(MapView mapview)
+        
+        public ICommand CreateOrderCommand { get;private set; }
+        public ICommand PageCommand { get;private set; }
+        public ICommand DataClicked { get;private set; }
+        public ClientViewModel(MapView mapview, ClientModel client)
         {
             MapController = new(mapview);
+            User = client;
             PageCommand = new Command(obj =>
             {
                 Shell.Current.GoToAsync("//ClientAccount");

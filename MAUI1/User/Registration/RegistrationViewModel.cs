@@ -22,18 +22,21 @@ namespace MAUI1.User.Registration
             RegistrationCommand = new Command(async obj =>
             {
                 object[] objects = (obj as object[]);
-                string name = objects[0].ToString();
-                string number = objects[1].ToString();
-                string email = objects[2].ToString();
-                string password = objects[3].ToString();
-                string passwordConf = objects[4].ToString();
+                string firstName = objects[0].ToString();
+                string lastName = objects[1].ToString();
+                string patronymic = objects[2]?.ToString();
+                string phoneNumber = objects[3].ToString();
+                DateTime dateOfBirth = (DateTime)objects[4];
+                string email = objects[5].ToString();
+                string password = objects[6].ToString();
+                string passwordConf = objects[7].ToString();
                 bool isEmailValid = false;
                 bool isPasswordValid = false;
                 bool isNumberValid = false;
                 string pattern = @"\D";
                 string target = "";
                 Regex regex = new Regex(pattern); //TODO:валидация телефона
-                number = regex.Replace(number, target);
+                phoneNumber = regex.Replace(phoneNumber, target);
                 if (Regex.IsMatch(email, @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
 @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,17}))$", RegexOptions.IgnoreCase))
                 {
@@ -44,18 +47,24 @@ namespace MAUI1.User.Registration
                     //TODO: проверка на парольчик
                     isPasswordValid = true;
                 }
-                if(Regex.IsMatch(number, "[7-8]{1}[0-9]{10}", RegexOptions.IgnoreCase))
+                if(Regex.IsMatch(phoneNumber, "[7-8]{1}[0-9]{10}", RegexOptions.IgnoreCase))
                 {
                     isNumberValid = true;
                 }
                 if(isEmailValid && isPasswordValid && isNumberValid)
                 {
-                   var response = await MAUI1.TCPCLient.SendQueryToServer(new string[] {"REGADD", name, number, email, password, "END"}, 8888, "192.168.0.36");
+                    UserModel user = new UserModel(firstName, lastName, phoneNumber, email, password, UserType.Client);
+                    user.Patronymic = patronymic;
+                    user.DateOfBirth = dateOfBirth;
+                    user.Created = DateTime.Now;
+                    var response = await MAUI1.TCPCLient.SendRegistrationQueryToServerAsync(user, 8888, "192.168.0.36");
                     //TODO: написать что регистрация прошла успешна и попросить залогиниться если 1, если 0 то хз пока
+                    await Shell.Current.GoToAsync("//Login");
                 }
             });
-          
 
+            TestCommand = new Command(() => { TCPCLient.GetUsersFromServerAsync(); });
+            TestCommand1 = new Command(() => { TCPCLient.SendTokenToServer(); });
         }
     }
 }

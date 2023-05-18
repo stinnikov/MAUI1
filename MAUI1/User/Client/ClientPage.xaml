@@ -1,31 +1,62 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:MAUI1.Converters"
+             xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
              x:Class="MAUI1.User.Client.ClientPage"
-             xmlns:local="clr-namespace:MAUI1.User.Client"
-             Title="ClientPage">
+             Title="ClientPersonalAccountPage"
+             >
     <ContentPage.Resources>
-        <local:ClientViewModel x:Key="ClientViewModel"></local:ClientViewModel>
         <ResourceDictionary>
-            <Style x:Key="buttonStyle" TargetType="Button">
-                <Setter Property="FontSize" Value="Body"></Setter>
-                <Setter Property="BackgroundColor" Value="Red"></Setter>
+            <conv:MultiConverter x:Key="MultiConverter"></conv:MultiConverter>
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="GhostWhite"></Setter>
+                <Setter Property="TextColor" Value="Black"></Setter>
+                <Setter Property="IsTextPredictionEnabled" Value="False"></Setter>
             </Style>
+            <Style TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"></Setter>
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+            </Style>
+
         </ResourceDictionary>
     </ContentPage.Resources>
-    <VerticalStackLayout>
-        <Grid BindingContext="{StaticResource ClientViewModel}" IsVisible="True" RowSpacing="250">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="12*"></RowDefinition>
+            <RowDefinition x:Name="orderStackLayoutRow" Height="0"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="165"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button VerticalOptions="Fill" HorizontalOptions="Fill" Grid.Column="1" Grid.Row="1" Text="Knopka" IsEnabled="True" Style="{StaticResource buttonStyle}" Command="{Binding Path=PageCommand}" ></Button>
+            <Border Grid.Column="0">
+                <Picker ItemsSource="{Binding dada}"></Picker>
+                <!--<Entry x:Name="from"  Placeholder="Откуда"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Entry>-->
+            </Border>
+            <Border Grid.Column="1">
+                <Entry x:Name="to"  Placeholder="Куда"  BackgroundColor="#FFFFFF"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Entry>
+            </Border>
+            <Border Grid.Column="2" Margin="0,0.3,0,0">
+                <ImageButton  Source="taxi.png" WidthRequest="165" IsEnabled="True" BackgroundColor="White" Clicked="ImageButton_Clicked" BorderColor="GhostWhite" Style="{StaticResource imageButtonStyleWithTrigger}" HorizontalOptions="Center" VerticalOptions="Start">
+                    <ImageButton.CommandParameter>
+                        <MultiBinding Converter="{StaticResource MultiConverter}">
+                            <!--<Binding Source="{x:Reference from}" Path="Text"></Binding>-->
+                            <Binding Source="{x:Reference to}" Path="Text"></Binding>
+                        </MultiBinding>
+                    </ImageButton.CommandParameter>
+                </ImageButton>
+            </Border>
         </Grid>
-    </VerticalStackLayout>
-    
+        <mapsui:MapView Grid.Row="1" x:Name="mapView"></mapsui:MapView>
+        <HorizontalStackLayout Grid.Row="2" x:Name="orderStackLayout" IsVisible="False" BackgroundColor="Lavender">
+            <Label Text="{Binding ClientVM.UserFullName}" TextColor="Black" ></Label>
+        </HorizontalStackLayout>
+    </Grid>
 </ContentPage>
