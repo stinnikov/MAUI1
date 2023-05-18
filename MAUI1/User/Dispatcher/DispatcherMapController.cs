@@ -41,10 +41,10 @@ namespace MAUI1.User.Dispatcher.Orders
                 this.mapView.Pins.Add(pin.Pin);
             }
             mapView.RefreshGraphics();
-            this.mapView.PinClicked += OrderMapView_PinClicked;
+            this.mapView.PinClicked += MapView_PinClicked;
         }
 
-        private void OrderMapView_PinClicked(object sender, PinClickedEventArgs e)
+        private new void MapView_PinClicked(object sender, PinClickedEventArgs e)
         {
             var smc = SphericalMercator.FromLonLat(e.Pin.Position.Longitude, e.Pin.Position.Latitude);
             mapView.Map.Navigator.CenterOnAndZoomTo(new Mapsui.MPoint(smc.x,smc.y), mapView.Map.Navigator.Resolutions[16]);

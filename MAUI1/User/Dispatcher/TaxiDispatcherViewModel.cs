@@ -2,6 +2,7 @@
 using MAUI1.User.Client;
 using MAUI1.User.Dispatcher.Orders;
 using MAUI1.User.Driver;
+using MAUI1.User.Order;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -57,6 +58,19 @@ namespace MAUI1.User.Dispatcher
             }
         }
         private Mapsui.UI.Maui.Pin selectedClientPin;
+        private DriverViewModel _selectedDriverViewModel;
+        public DriverViewModel SelectedDriverVM 
+        {
+            get => _selectedDriverViewModel;
+            set
+            {
+                if(value != null)
+                {
+                    _selectedDriverViewModel = value;
+                    OnPropertyChanged("SelectedDriverVM");
+                }
+            }
+        }
         private ClientViewModel _selectedClientVM;
         public ClientViewModel SelectedClientVM 
         { 
@@ -79,7 +93,6 @@ namespace MAUI1.User.Dispatcher
                 }
             } 
         }
-        public DriverViewModel SelectedDriverVM { get; set; }
         private DispatcherMapController _dispatcherMapController;
         public DispatcherMapController DispatcherMapController
         {
@@ -93,7 +106,7 @@ namespace MAUI1.User.Dispatcher
                 }
             }
         }
-       
+        
         public ICommand ShowClientPinCommand { get; set; }
         public ICommand ClientOrderSelectedCommand { get; set; }
         public ICommand DriversOnTheMapShowCheckedChangedCommand { get; set; }

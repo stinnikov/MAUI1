@@ -22,7 +22,7 @@ public partial class App : Application
         dvm.User = new("Karlo", "Driver", "89130481262", "driver1@mail.ru", "dadada", User.UserType.Driver);
         dvm.Order = new OrderViewModel(client1, dvm, "Село Аскиз улица Базинская 5", "Село Аскиз улица Карланская 25");
         //MainPage = new DriverPage(dvm);
-        MainPage = new ClientPage();
+        MainPage = new TaxiDispatcherPage();
         //string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), @"MAUI//MAUI1");
         //Directory.CreateDirectory(path);
         Directory.CreateDirectory(projectPersonalFolderPath);

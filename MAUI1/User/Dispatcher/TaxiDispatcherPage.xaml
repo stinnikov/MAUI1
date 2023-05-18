@@ -27,9 +27,9 @@
             <RowDefinition Height="2.25*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        
+
         <mapsui:MapView x:Name="mapView"></mapsui:MapView>
-        
+
         <Border Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
@@ -37,7 +37,8 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Grid Margin="5,0,0,0"> <!-- сетка под Radio Buttons -->
+                <Grid Margin="5,0,0,0">
+                    <!-- сетка под Radio Buttons -->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
@@ -48,7 +49,7 @@
                         <RadioButton x:Name="AllOrders" IsChecked="{Binding IsShownAllOrders}" Content="Все заказы"></RadioButton>
                         <RadioButton x:Name="SelectedClientOrder" IsChecked="{Binding IsShownAllOrders, Converter={StaticResource InverseBooleanConverter}}" Content="Выбранный заказ"></RadioButton>
                     </HorizontalStackLayout>
-                    
+
                     <HorizontalStackLayout Grid.Column="1">
                         <CheckBox IsChecked="{Binding IsDriversShownOnTheMap}">
                             <CheckBox.Behaviors>
@@ -60,7 +61,7 @@
                         </CheckBox>
                         <Label Text="Отображать водителей" VerticalOptions="Center"></Label>
                     </HorizontalStackLayout>
-                    
+
                     <HorizontalStackLayout Grid.Column="2">
                         <CheckBox IsChecked="{Binding IsAllClientsShownOnTheMap}">
                             <CheckBox.Behaviors>
@@ -79,8 +80,8 @@
                             <ColumnDefinition Width="3*"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                    
-                        
+
+
                     </Grid>
                 </Border>
 
@@ -93,7 +94,7 @@
                         <ColumnDefinition Width="3*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    
+
                     <Border>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -131,8 +132,9 @@
                             </Border>
 
                         </Grid>
-                    </Border> <!--Панель названий-->
-                    
+                    </Border>
+                    <!--Панель названий-->
+
                     <ListView x:Name="ClientOrderList"
                           Grid.Row="1"
                           Grid.Column="0"
@@ -176,14 +178,13 @@
                           Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                        <!--номер_заказа имя номер_телефона емейл откуда куда ещё_чёто-->
-                        <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                            <!--номер_заказа имя номер_телефона емейл откуда куда ещё_чёто-->
+                            <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Label></Label>
                         <Label Grid.Column="1" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
                         <Label Grid.Column="2" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
                         <Label Grid.Column="3" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
@@ -194,27 +195,27 @@
                     <Border Grid.Column="1">
                         <Label Text="Инфо" Style="{StaticResource labelStyle}"></Label>
                     </Border>
-                    
+
                     <VerticalStackLayout Spacing="5" Margin="5,0,0,0" Grid.Row="1" Grid.Column="1">
-                        
+
                         <HorizontalStackLayout Spacing="5" Margin="0,5,0,0">
                             <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultClientColor}" Fill="{Binding DefaultClientColor}"></Ellipse>
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Клиент" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
-                        
+
                         <HorizontalStackLayout Spacing="5" IsVisible="{Binding IsAllClientsShownOnTheMap}">
                             <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultSelectedClientColor}" Fill="{Binding DefaultSelectedClientColor}"></Ellipse>
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Выбранный клиент" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
-                        
+
                         <HorizontalStackLayout Spacing="5">
                             <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultDriverColor}" Fill="{Binding DefaultDriverColor}"></Ellipse>
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Водитель" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
-                        
+
                     </VerticalStackLayout>
                 </Grid>
             </Grid>

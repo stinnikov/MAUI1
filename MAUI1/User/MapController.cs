@@ -283,7 +283,7 @@ namespace MAUI1.User
         }
         #endregion
         #endregion
-        private async void Mapview_MapClicked(object sender, MapClickedEventArgs e)
+        public virtual async void Mapview_MapClicked(object sender, MapClickedEventArgs e)
         {
             if (IsMapClickable)
             {
@@ -330,7 +330,7 @@ namespace MAUI1.User
             pin.HideCallout();
             timer.Stop();
         }
-        private void Mapview_PinClicked(object sender, PinClickedEventArgs e)
+        public virtual void MapView_PinClicked(object sender, PinClickedEventArgs e)
         {
 
         }

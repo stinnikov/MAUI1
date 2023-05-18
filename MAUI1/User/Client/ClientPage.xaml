@@ -37,8 +37,7 @@
                 <ColumnDefinition Width="165"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0">
-                <Picker ItemsSource="{Binding dada}"></Picker>
-                <!--<Entry x:Name="from"  Placeholder="Откуда"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Entry>-->
+                <Entry x:Name="from"  Placeholder="Откуда"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Entry>
             </Border>
             <Border Grid.Column="1">
                 <Entry x:Name="to"  Placeholder="Куда"  BackgroundColor="#FFFFFF"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Entry>
@@ -47,7 +46,7 @@
                 <ImageButton  Source="taxi.png" WidthRequest="165" IsEnabled="True" BackgroundColor="White" Clicked="ImageButton_Clicked" BorderColor="GhostWhite" Style="{StaticResource imageButtonStyleWithTrigger}" HorizontalOptions="Center" VerticalOptions="Start">
                     <ImageButton.CommandParameter>
                         <MultiBinding Converter="{StaticResource MultiConverter}">
-                            <!--<Binding Source="{x:Reference from}" Path="Text"></Binding>-->
+                            <Binding Source="{x:Reference from}" Path="Text"></Binding>
                             <Binding Source="{x:Reference to}" Path="Text"></Binding>
                         </MultiBinding>
                     </ImageButton.CommandParameter>
