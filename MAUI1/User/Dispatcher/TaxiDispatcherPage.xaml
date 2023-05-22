@@ -172,10 +172,15 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <Grid>
                     <Grid Grid.Column="0" Grid.Row="1" 
                           IsVisible="{Binding Source={x:Reference SelectedClientOrder}, Path=IsChecked}" 
                           BindingContext="{Binding Source={x:Reference ClientOrderList}, Path=SelectedItem}"
                           Margin="0,5,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"></ColumnDefinition>
                             <!--номер_заказа имя номер_телефона емейл откуда куда ещё_чёто-->
@@ -190,6 +195,10 @@
                         <Label Grid.Column="3" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
                         <Label Grid.Column="4" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
                         <Label Grid.Column="5" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Grid Grid.Row="1">
+                                
+                            </Grid>
+                    </Grid>
                     </Grid>
 
                     <Border Grid.Column="1">

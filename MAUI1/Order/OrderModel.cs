@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUI1.User.Dispatcher.Orders
+namespace MAUI1.User.Order
 {
     public enum OrderStatus
     {

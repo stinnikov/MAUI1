@@ -93,8 +93,20 @@
                     <Label  Text="{Binding UserFullName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
                 </HorizontalStackLayout>
 
-                <Label Grid.Column="1" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                <Label Grid.Column="2" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                <Label Grid.Column="1" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:DriverViewModel}}, Path=TapOrderStartingPointLabelTappedCommand}">
+                        </TapGestureRecognizer>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Grid.Column="2" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:DriverViewModel}}, Path=TapOrderEndingPointLabelTappedCommand}">
+                        </TapGestureRecognizer>
+                    </Label.GestureRecognizers>
+                </Label>
                 <Label Grid.Column="3" Text="{Binding OrderPrice}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
                 <Label Grid.Column="4" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
 

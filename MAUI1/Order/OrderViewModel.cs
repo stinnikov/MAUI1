@@ -9,8 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MAUI1.User.Dispatcher;
 
-namespace MAUI1.User.Dispatcher.Orders
+namespace MAUI1.User.Order
 {
     public class OrderViewModel : ViewModel
     {
@@ -29,12 +30,13 @@ namespace MAUI1.User.Dispatcher.Orders
         public string StartingPoint
         {
             get => Order.StartPoint;
-            private set
+            set 
             {
                 if (value != null)
                 {
                     Order.StartPoint = value;
                     OnPropertyChanged("StartingPoint");
+                    SetLonLatProp(value);
                 }
             }
         }
@@ -66,19 +68,19 @@ namespace MAUI1.User.Dispatcher.Orders
         {
             get
             {
-                if (Order.Status == Orders.OrderStatus.Waiting)
+                if (Order.Status == MAUI1.User.Order.OrderStatus.Waiting)
                 {
                     return "Ожидает";
                 }
-                else if(Order.Status == Orders.OrderStatus.InProgress)
+                else if(Order.Status == MAUI1.User.Order.OrderStatus.InProgress)
                 {
                     return "Выполняется";
                 }
-                else if(Order.Status == Orders.OrderStatus.CompletedWithQuestionMark)
+                else if(Order.Status == MAUI1.User.Order.OrderStatus.CompletedWithQuestionMark)
                 {
                     return "Завершён?";
                 }
-                else if(Order.Status == Orders.OrderStatus.Completed)
+                else if(Order.Status == MAUI1.User.Order.OrderStatus.Completed)
                 {
                     return "Завершён";
                 }
@@ -88,7 +90,11 @@ namespace MAUI1.User.Dispatcher.Orders
                 }
             }
         }
-            
+        public (double, double) StartingPointLonLat { get; set; }
+        public async void SetLonLatProp(string address)
+        {
+            StartingPointLonLat = await MapController.GetLonLatFromAddress(address);
+        }
         public OrderViewModel(ClientViewModel clientVM, DriverViewModel driverVM, string startPoint, string endPoint)
         {
             ClientVM = clientVM;
@@ -100,11 +106,11 @@ namespace MAUI1.User.Dispatcher.Orders
                 StartPoint = startPoint,
                 EndPoint = endPoint
             };
-            AcceptOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
-            DeclineOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Cancelled; OnPropertyChanged("OrderStatus"); });
-            CompleteWithQuestionMarkCommand = new Command(() => { Order.Status = Orders.OrderStatus.CompletedWithQuestionMark; OnPropertyChanged("OrderStatus"); });
-            CompleteOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Completed; OnPropertyChanged("OrderStatus"); });
-            UndoCompletionCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
+            AcceptOrderCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
+            DeclineOrderCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.Cancelled; OnPropertyChanged("OrderStatus"); });
+            CompleteWithQuestionMarkCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.CompletedWithQuestionMark; OnPropertyChanged("OrderStatus"); });
+            CompleteOrderCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.Completed; OnPropertyChanged("OrderStatus"); });
+            UndoCompletionCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
         }
         public OrderViewModel(ClientViewModel clientVM, string startPoint, string endPoint)
         {
@@ -115,12 +121,12 @@ namespace MAUI1.User.Dispatcher.Orders
                 StartPoint = startPoint,
                 EndPoint = endPoint
             };
-            AcceptOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
-            DeclineOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Cancelled; OnPropertyChanged("OrderStatus"); });
+            AcceptOrderCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
+            DeclineOrderCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.Cancelled; OnPropertyChanged("OrderStatus"); });
             CompleteWithQuestionMarkCommand = new Command(() => 
-            { Order.Status = Orders.OrderStatus.CompletedWithQuestionMark; OnPropertyChanged("OrderStatus"); });
-            CompleteOrderCommand = new Command(() => { Order.Status = Orders.OrderStatus.Completed; OnPropertyChanged("OrderStatus"); });
-            UndoCompletionCommand = new Command(() => { Order.Status = Orders.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
+            { Order.Status = MAUI1.User.Order.OrderStatus.CompletedWithQuestionMark; OnPropertyChanged("OrderStatus"); });
+            CompleteOrderCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.Completed; OnPropertyChanged("OrderStatus"); });
+            UndoCompletionCommand = new Command(() => { Order.Status = MAUI1.User.Order.OrderStatus.InProgress; OnPropertyChanged("OrderStatus"); });
         }
         public OrderViewModel()
         {

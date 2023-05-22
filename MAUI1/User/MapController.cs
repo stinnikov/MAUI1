@@ -110,6 +110,48 @@ namespace MAUI1.User
                 mapView.Refresh();
             });
         }
+        public static async Task<string> GetAddressFromLonLat(double longitude, double latitude)
+        {
+            IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(latitude, longitude);
+            Placemark placemark = placemarks?.FirstOrDefault();
+            if (placemark != null)
+            {
+                return placemark.FeatureName;
+            }
+            return "";
+        }
+        public static async Task<(double,double)> GetLonLatFromAddress(string address)
+        {
+            //char[] separators = {'.', ' ' };
+            //string[] splitted_address = address.Split(separators).Where(item => item != "").ToArray();
+            //address = "";
+            //foreach (string str in splitted_address)
+            //{
+            //    if (str == "ул")
+            //    {
+            //        address += "улица ";
+            //        continue;
+            //    }
+            //    if (str == "д")
+            //    {
+            //        address += "дом ";
+            //        continue;
+            //    }
+            //    if (str == "кв")
+            //    {
+            //        address += "квартира ";
+            //        continue;
+            //    }
+            //    address += str + " ";
+            //}
+            IEnumerable<Location> locations = await Geocoding.Default.GetLocationsAsync(address);
+            Location location = locations?.FirstOrDefault();
+            if (location != null)
+            {
+                return (location.Longitude, location.Latitude);
+            }
+            return (0,0);
+        }
         public async void MapViewInit()
         {
             mapView.IsMyLocationButtonVisible = false;
@@ -127,6 +169,7 @@ namespace MAUI1.User
             {
                 mapView.MapClicked += Mapview_MapClicked;
             }
+            mapView.PinClicked += MapView_PinClicked;
             mapView.SizeChanged += UpdateButtons;
             mapView.Refresh();
         }
@@ -332,13 +375,13 @@ namespace MAUI1.User
         }
         public virtual void MapView_PinClicked(object sender, PinClickedEventArgs e)
         {
-
+            e.Pin.ShowCallout();
         }
         #endregion
         #region ЛОКАЦИЯ
-        public async void ToggleGPS(bool toggleOn)
+        public async void ToggleGPS(bool isToggled)
         {
-            if (toggleOn)
+            if (isToggled)
             {
                 if (await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(1), 5, true, new ListenerSettings
                 {

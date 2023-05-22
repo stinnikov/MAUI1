@@ -6,10 +6,19 @@
              Title="OrderHandlerPage">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <mapsui:MapView x:Name="mapView"></mapsui:MapView>
-        <Label Grid.Row="1" Text="{Binding PinList[0].User.Name}" HorizontalOptions="Center" VerticalOptions="Center"></Label>
+        <VerticalStackLayout Grid.Row="1">
+            
+            <Entry x:Name="entry1"></Entry>
+            <Button Clicked="Button_Clicked" Text="Прямое геокодирование"></Button>
+            <Label x:Name="label1"></Label>
+            <Entry x:Name="entry2" Text="{Binding Source={x:Reference label1}, Path=Text}"></Entry>
+            <Button Clicked="Button_Clicked_1" Text="Обратное геокодирование"></Button>
+            <Label x:Name="label2"></Label>
+            
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

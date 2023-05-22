@@ -8,7 +8,7 @@ public partial class DriverPage : ContentPage
 	public DriverPage(DriverViewModel dvm)
 	{
 		InitializeComponent();
-        dvm.MapController = new MapController(mapView);
+        dvm.DriverMapController = new DriverMapController(mapView);
         this.BindingContext = dvm;
         //var dvm = new DriverViewModel(mapView);
         //this.BindingContext = dvm;

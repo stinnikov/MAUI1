@@ -5,6 +5,7 @@ using MAUI1.User.Client;
 using MAUI1.User.Dispatcher;
 using MAUI1.User.Dispatcher.Orders;
 using MAUI1.User.Driver;
+using MAUI1.User.Order;
 using MAUI1.User.Registration;
 using System;
 
@@ -20,9 +21,9 @@ public partial class App : Application
         Application.Current.UserAppTheme = AppTheme.Dark;
         ClientViewModel client1 = new() { User = new("Karlo", "Client", "89130581262", "client@mail.ru", "dadada", User.UserType.Client) };
         dvm.User = new("Karlo", "Driver", "89130481262", "driver1@mail.ru", "dadada", User.UserType.Driver);
-        dvm.Order = new OrderViewModel(client1, dvm, "Село Аскиз улица Базинская 5", "Село Аскиз улица Карланская 25");
-        //MainPage = new DriverPage(dvm);
-        MainPage = new TaxiDispatcherPage();
+        dvm.Order = new OrderViewModel(client1, dvm, "Красноярск, Институт космических и информационных технологий", "Красноярск, проспект Свободный 76");
+        MainPage = new DriverPage(dvm);
+        //MainPage = new OrderHandlerPage();
         //string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), @"MAUI//MAUI1");
         //Directory.CreateDirectory(path);
         Directory.CreateDirectory(projectPersonalFolderPath);
