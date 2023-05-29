@@ -161,15 +161,6 @@
                             </DataTrigger>
                         </Button.Triggers>
                     </Button>
-                    <HorizontalStackLayout IsVisible="False">
-                        <HorizontalStackLayout.Triggers>
-                            <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding OrderStatus}" Value="Завершён?">
-                                <Setter Property="IsVisible" Value="True"></Setter>
-                             </DataTrigger>
-                        </HorizontalStackLayout.Triggers>
-                        <Button Text="DA" Command="{Binding CompleteOrderCommand}" BackgroundColor="ForestGreen" Style="{StaticResource buttonStyleWithTrigger}"></Button>
-                        <Button Text="NET" Command="{Binding UndoCompletionCommand}" BackgroundColor="Red" Style="{StaticResource buttonStyleWithTrigger}"></Button>
-                    </HorizontalStackLayout>
                 </HorizontalStackLayout>
             </HorizontalStackLayout>
         </Grid>

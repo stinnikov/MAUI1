@@ -10,6 +10,7 @@ using Mapsui.UI.Maui;
 using MAUI1.User.Dispatcher.Orders;
 using MAUI1.User.Order;
 using System.ComponentModel;
+using System.Net.Sockets;
 
 namespace MAUI1.User.Driver
 {
@@ -37,22 +38,23 @@ namespace MAUI1.User.Driver
         public ICommand TapOrderStartingPointLabelTappedCommand { get; set; }
         public ICommand TapOrderEndingPointLabelTappedCommand { get; set; }
 
-        public DriverViewModel(MapView mapview, DriverModel driver)
+        public DriverViewModel(MapView mapview, UserModel driver)
         {
             this.DriverMapController = new DriverMapController(mapview);
             User = driver;
-            camanda = new Command(() => 
-            {
-                (Application.Current.MainPage as NavigationPage).PushAsync(new UserAccountPage());
-            });
-            TapOrderStartingPointLabelTappedCommand = new Command(obj =>
-            {
-
-            }
-            );
+            DriverCommandsInit();
         }
-        
+        public DriverViewModel(UserModel driver)
+        {
+            User = driver;
+            DriverCommandsInit();
+        }
+
         public DriverViewModel()
+        {
+            DriverCommandsInit();
+        }
+        public void DriverCommandsInit()
         {
             TapOrderStartingPointLabelTappedCommand = new Command
             (
@@ -78,7 +80,7 @@ namespace MAUI1.User.Driver
                         this.DriverMapController.HideStartingPointPinCalloutTimer = new System.Timers.Timer(1000);
                         this.DriverMapController.HideStartingPointPinCalloutTimer.Elapsed += (o, e) =>
                         {
-                            if(!this.DriverMapController.StartingPointPin.Callout.IsVisible)
+                            if (!this.DriverMapController.StartingPointPin.Callout.IsVisible)
                             {
                                 this.DriverMapController.HideStartingPointPinCalloutTimer.Stop();
                                 this.DriverMapController.HideStartingPointPinCalloutTimer.Dispose();

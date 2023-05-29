@@ -8,13 +8,13 @@ using System.Windows.Input;
 
 namespace MAUI1.User.Admin
 {
-    internal class AdminVM : UserVM
+    public class AdminVM : UserVM
     {
         public ObservableCollection<UserVM> Users { get; set; } = new ObservableCollection<UserVM>();
         public ICommand Test { get; set; }
-        public AdminVM()
+        public AdminVM(UserModel user)
         {
-            User = new UserModel("admin", "admin", "admin", "admin@mail.ru", "admin", UserType.Administrator);
+            User = user;
             Test = new Command(async () =>
             {
                 var users = await TCPCLient.GetUsersFromServerAsync();

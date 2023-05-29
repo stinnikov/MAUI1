@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MAUI1.User.Client"
              xmlns:conv="clr-namespace:MAUI1.Converters"
              xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
              x:Class="MAUI1.User.Client.ClientPage"
@@ -9,28 +10,30 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:MultiConverter x:Key="MultiConverter"></conv:MultiConverter>
+            <conv:InverseBooleanConverter x:Key="InverseBooleanConverter"></conv:InverseBooleanConverter>
             <Style TargetType="Entry">
                 <Setter Property="BackgroundColor" Value="GhostWhite"></Setter>
                 <Setter Property="TextColor" Value="Black"></Setter>
                 <Setter Property="IsTextPredictionEnabled" Value="False"></Setter>
             </Style>
             <Style TargetType="Border">
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+                <Setter Property="BackgroundColor" Value="GhostWhite"></Setter>
+                <Setter Property="Stroke" Value="Black"></Setter>
+                <Setter Property="StrokeThickness" Value="0.05"></Setter>
             </Style>
             <Style TargetType="Label">
-                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightPrimaryColor}, Dark={StaticResource DarkPrimaryColor}}"></Setter>
-                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+                <Setter Property="BackgroundColor" Value="GhostWhite"></Setter>
+                <Setter Property="TextColor" Value="Black"></Setter>
             </Style>
 
         </ResourceDictionary>
     </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="1.4*"></RowDefinition>
             <RowDefinition Height="12*"></RowDefinition>
-            <RowDefinition x:Name="orderStackLayoutRow" Height="0"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Grid.Row="0" IsVisible="{Binding IsOrderPossibilityAvailable}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -43,7 +46,7 @@
                 <Entry x:Name="to"  Placeholder="Куда"  BackgroundColor="#FFFFFF"  VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Entry>
             </Border>
             <Border Grid.Column="2" Margin="0,0.3,0,0">
-                <ImageButton  Source="taxi.png" WidthRequest="165" IsEnabled="True" BackgroundColor="White" Clicked="ImageButton_Clicked" BorderColor="GhostWhite" Style="{StaticResource imageButtonStyleWithTrigger}" HorizontalOptions="Center" VerticalOptions="Start">
+                <ImageButton  Source="taxi.png" WidthRequest="165" IsEnabled="True" BackgroundColor="White" Command="{Binding CreateOrderCommand}" BorderColor="GhostWhite" Style="{StaticResource imageButtonStyleWithTrigger}" HorizontalOptions="Center" VerticalOptions="Start">
                     <ImageButton.CommandParameter>
                         <MultiBinding Converter="{StaticResource MultiConverter}">
                             <Binding Source="{x:Reference from}" Path="Text"></Binding>
@@ -53,9 +56,33 @@
                 </ImageButton>
             </Border>
         </Grid>
+        <Border  Grid.Row="0" Margin="0,5,0,0"
+            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type local:ClientViewModel}}, Path=IsOrderPossibilityAvailable, Converter={StaticResource InverseBooleanConverter}}">
+            <Grid BindingContext="{Binding Order}"
+                  BackgroundColor="GhostWhite">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <!--имя откуда куда цена статус-->
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Text="{Binding DriverFullName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+
+                <Label Grid.Row="1"  Grid.Column="0" Text="{Binding DriverPhoneNumber}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+
+                <Label Grid.Row="0"  Grid.Column="1" Text="{Binding StartingPoint}"  HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+
+                <Label Grid.Row="1"  Grid.Column="1" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                
+                <Label Grid.Row="0" Grid.Column="2" Text="{Binding OrderPrice}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                
+                <Label  Grid.Row="1" Grid.Column="2" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+            </Grid>
+        </Border>
         <mapsui:MapView Grid.Row="1" x:Name="mapView"></mapsui:MapView>
-        <HorizontalStackLayout Grid.Row="2" x:Name="orderStackLayout" IsVisible="False" BackgroundColor="Lavender">
-            <Label Text="{Binding ClientVM.UserFullName}" TextColor="Black" ></Label>
-        </HorizontalStackLayout>
     </Grid>
 </ContentPage>

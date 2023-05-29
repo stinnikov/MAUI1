@@ -15,40 +15,40 @@ namespace MAUI1.User.Client
 {
     public class ClientViewModel : UserVM
     {
-        public ObservableCollection<string> dada { get; set; } = new ObservableCollection<string> { "dada","dada", "dada", "dada" };
-        private MapController MapController;
-        public OrderViewModel Order { get; set; }
-        public ImageSource AvatarSource
+        private bool _isOrderPossibilityAvailable = true;
+        public bool IsOrderPossibilityAvailable 
         {
-           get {
-                var avatarPath = $"{App.projectPersonalFolderPath}\\avatar.png";
-                if (File.Exists(avatarPath))
-                {
-                    return ImageSource.FromFile(avatarPath);
-                }
-                else
-                {
-                    var defaultClientImagePath = $"{App.projectPersonalFolderPath}\\DefaultClientImage.png";
-                    return ImageSource.FromFile(defaultClientImagePath);
-                }
-           }
+            get => _isOrderPossibilityAvailable;
+            set
+            {
+                _isOrderPossibilityAvailable = value;
+                OnPropertyChanged(nameof(IsOrderPossibilityAvailable));
+            }
         }
-        
-        
+        public MapController MapController { get; set; }
+        public OrderViewModel Order { get; set; }              
         public ICommand CreateOrderCommand { get;private set; }
         public ICommand PageCommand { get;private set; }
         public ICommand DataClicked { get;private set; }
-        public ClientViewModel(MapView mapview, ClientModel client)
+        public ClientViewModel(MapView mapView, UserModel client)
         {
-            MapController = new(mapview);
             User = client;
-            PageCommand = new Command(obj =>
-            {
-                Shell.Current.GoToAsync("//ClientAccount");
-            });
+            MapController mapController = new MapController(mapView);
+        }
+        public ClientViewModel(UserModel client)
+        {
+            User = client;
+            CommandsInit();
         }
         public ClientViewModel()
         {
         }
+        private void CommandsInit()
+        {
+            CreateOrderCommand = new Command(() =>
+            {
+                IsOrderPossibilityAvailable = !IsOrderPossibilityAvailable;
+            });
+    }
     }
 }

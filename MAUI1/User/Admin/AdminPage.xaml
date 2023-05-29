@@ -4,10 +4,7 @@
              xmlns:local="clr-namespace:MAUI1.User.Admin"
              x:Class="MAUI1.User.Admin.AdminPage"
              Title="AdminPage">
-    <ContentPage.BindingContext>
-        <local:AdminVM></local:AdminVM>
-    </ContentPage.BindingContext>
-<VerticalStackLayout>
+    <VerticalStackLayout>
         <Button Text="TEST" Command="{Binding Test}"></Button>
         <ListView ItemsSource="{Binding Users}" >
             <ListView.ItemTemplate>

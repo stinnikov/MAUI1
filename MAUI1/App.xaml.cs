@@ -8,6 +8,8 @@ using MAUI1.User.Driver;
 using MAUI1.User.Order;
 using MAUI1.User.Registration;
 using System;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace MAUI1;
 
@@ -17,59 +19,70 @@ public partial class App : Application
     public  App()
 	{
 	    InitializeComponent();
-        var dvm = new DriverViewModel();
-        Application.Current.UserAppTheme = AppTheme.Dark;
-        ClientViewModel client1 = new() { User = new("Karlo", "Client", "89130581262", "client@mail.ru", "dadada", User.UserType.Client) };
-        dvm.User = new("Karlo", "Driver", "89130481262", "driver1@mail.ru", "dadada", User.UserType.Driver);
-        dvm.Order = new OrderViewModel(client1, dvm, "Красноярск, Институт космических и информационных технологий", "Красноярск, проспект Свободный 76");
-        MainPage = new DriverPage(dvm);
-        //MainPage = new OrderHandlerPage();
+        //var dvm = new DriverViewModel();
+        //Application.Current.UserAppTheme = AppTheme.Dark;
+        //ClientViewModel client1 = new() { User = new("client", "client", "89130581262", "client@mail.ru", "client", UserType.Client) };
+        //dvm.User = new("driver", "driver", "89130581263", "driver@mail.ru", "driver", UserType.Driver);
+        //var order = new OrderModel("Улица Киренского 26, Красноярск", "Проспект Свободный 76Н", client1.User);
+        //dvm.Order = new OrderViewModel(order, client1);
+        ////MainPage = new DriverPage(dvm);
+        //MainPage = new AppShell();
         //string path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), @"MAUI//MAUI1");
         //Directory.CreateDirectory(path);
+        //TaxiDispatcherModel tdispatcher = new TaxiDispatcherModel("dispatcher", "dispatcher", "dispatcher", "dispatcher", "dispatcher");
+        //TaxiDispatcherViewModel taxiDispatcherViewModel = new TaxiDispatcherViewModel(tdispatcher);
+        //MainPage = new TaxiDispatcherPage(taxiDispatcherViewModel);
+        
+        MainPage = new LoadingPage();
+        //MainThread.BeginInvokeOnMainThread(async () =>
+        //{
+        //    var loc = await TCPCLient.GetUserLocation("driver");
+        //    //System.Timers.Timer timer = new System.Timers.Timer();
+        //    //timer.Interval = 1000;
+        //    //Random rnd = new Random();
+        //    //timer.Elapsed += async (o, e) =>
+        //    //{
+
+        //    //};
+        //    //timer.Start();
+        //});
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            try
+            {
+                if(true)
+                {
+                    var userVM = await TCPCLient.GetAutorizationDataAsync();
+                    if (userVM != null)
+                    {
+                        if (userVM.User.UserType == UserType.Client)
+                        {
+                            MainPage = new ClientPage(userVM as ClientViewModel);
+                        }
+                        else if (userVM.User.UserType == UserType.Driver)
+                        {
+                            MainPage = new DriverPage(userVM as DriverViewModel);
+                        }
+                        else if (userVM.User.UserType == UserType.Dispatcher)
+                        {
+                            MainPage = new TaxiDispatcherPage(userVM as TaxiDispatcherViewModel);
+                        }
+                        else if (userVM.User.UserType == UserType.Administrator)
+                        {
+                            MainPage = new AdminPage(userVM as AdminVM);
+                        }
+                    }
+                    else
+                    {
+                        MainPage = new AppShell();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+            }
+        });
         Directory.CreateDirectory(projectPersonalFolderPath);
     }
-    //protected override void OnStart()
-    //{
-    //    var task = TCPCLient.GetAutorizationDataAsync();
-
-    //    task.ContinueWith((task) =>
-    //    {
-    //        MainThread.BeginInvokeOnMainThread(() =>
-    //        {
-    //            try
-    //            {
-    //                var userVM = task.Result;
-    //                if (userVM != null)
-    //                {
-    //                    if (userVM.User.UserType == UserType.Client)
-    //                    {
-    //                        MainPage = new ClientPersonalAccountPage();
-    //                    }
-    //                    else if(userVM.User.UserType == UserType.Driver)
-    //                    {
-    //                        MainPage = new DriverPage();
-    //                    }
-    //                    else if(userVM.User.UserType == UserType.Dispatcher)
-    //                    {
-    //                        MainPage = new TaxiDispatcherPage();
-    //                    }
-    //                    else if (userVM.User.UserType == UserType.Administrator)
-    //                    {
-    //                        MainPage = new AdminPage();
-    //                    }
-    //                }
-    //                else
-    //                {
-    //                    MainPage = new AppShell();
-    //                }
-    //            }
-    //            catch(Exception ex)
-    //            {
-    //                Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
-    //            }
-    //        });
-    //    });
-
-    //    base.OnStart();
-    //}
 }

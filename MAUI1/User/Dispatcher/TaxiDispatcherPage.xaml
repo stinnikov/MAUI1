@@ -3,17 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
              xmlns:local="clr-namespace:MAUI1.User.Dispatcher"
+             xmlns:user="clr-namespace:MAUI1.User"
              xmlns:converters="clr-namespace:MAUI1.Converters"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MAUI1.User.Dispatcher.TaxiDispatcherPage"
              Title="TaxiDispatcherPage">
-    <ContentPage.BindingContext>
-        <local:TaxiDispatcherViewModel x:Name="dvm"></local:TaxiDispatcherViewModel>
-    </ContentPage.BindingContext>
     <ContentPage.Resources>
         <ResourceDictionary>
             <!--<toolkit:SelectedItemEventArgsConverter x:Key="SelectedItemEventArgsConverter"></toolkit:SelectedItemEventArgsConverter>-->
-            <local:TaxiDispatcherViewModel x:Key="test"></local:TaxiDispatcherViewModel>
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"></converters:InverseBooleanConverter>
             <Style TargetType="Label" x:Key="labelStyle">
                 <Setter Property="FontSize" Value="16"></Setter>
@@ -98,37 +95,37 @@
                     <Border>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                                <!--номер_заказа ава имя номер_телефона емейл откуда куда ещё_чёто-->
                                 <ColumnDefinition Width="2.5*"></ColumnDefinition>
                                 <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                 <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                 <ColumnDefinition Width="3*"></ColumnDefinition>
                                 <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <Border>
-                                <Label Text="№" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
 
-                            <Border Grid.Column="1">
+                            <Border Grid.Column="0">
                                 <Label Text="Имя пользователя" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="2">
+                            <Border Grid.Column="1">
                                 <Label Text="Телефон" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="3">
+                            <Border Grid.Column="2">
                                 <Label Text="Email" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="4">
+                            <Border Grid.Column="3">
                                 <Label Text="Адрес отправки" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
-                            <Border Grid.Column="5">
+                            <Border Grid.Column="4">
                                 <Label Text="Адрес прибытия" Style="{StaticResource labelStyle}"></Label>
+                            </Border>
+
+                            <Border Grid.Column="5">
+                                <Label Text="Статус" Style="{StaticResource labelStyle}"></Label>
                             </Border>
 
                         </Grid>
@@ -138,7 +135,7 @@
                     <ListView x:Name="ClientOrderList"
                           Grid.Row="1"
                           Grid.Column="0"
-                          ItemsSource="{Binding Collection}"
+                          ItemsSource="{Binding Orders}"
                           RowHeight="45"
                           SelectionMode="Single"
                           IsVisible="{Binding Source={x:Reference AllOrders}, Path=IsChecked}">
@@ -154,51 +151,77 @@
                                 <ViewCell>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                                            <!--номер_заказа ава имя номер_телефона емейл откуда куда ещё_чёто-->
                                             <ColumnDefinition Width="2.5*"></ColumnDefinition>
                                             <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                             <ColumnDefinition Width="1.5*"></ColumnDefinition>
                                             <ColumnDefinition Width="3*"></ColumnDefinition>
                                             <ColumnDefinition Width="3*"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="1" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                                        <Label Grid.Column="2" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="3" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="4" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="5" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="0" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+                                        <Label Grid.Column="1" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="2" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="3" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="4" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
+                                        <Label Grid.Column="5" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
                                     </Grid>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Grid>
-                    <Grid Grid.Column="0" Grid.Row="1" 
-                          IsVisible="{Binding Source={x:Reference SelectedClientOrder}, Path=IsChecked}" 
-                          BindingContext="{Binding Source={x:Reference ClientOrderList}, Path=SelectedItem}"
-                          Margin="0,5,0,0">
+                    <Grid Grid.Column="0" Grid.Row="1" IsVisible="{Binding Source={x:Reference SelectedClientOrder}, Path=IsChecked}"
+                          Margin="0,15,0,0">
                         <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="0.3*"></RowDefinition>
+                            <RowDefinition Height="0.5*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                            <!--номер_заказа имя номер_телефона емейл откуда куда ещё_чёто-->
-                            <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="1" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                        <Label Grid.Column="2" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                        <Label Grid.Column="3" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                        <Label Grid.Column="4" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                        <Label Grid.Column="5" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Grid Grid.Row="1">
-                                
-                            </Grid>
-                    </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                               IsVisible="{Binding IsAllClientsShownOnTheMap, Converter={StaticResource InverseBooleanConverter}}"
+                               Text="{Binding SelectedClientVM.UserFullName}"
+                               TextColor="{Binding DefaultClientColor}" 
+                               HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="0"
+                               IsVisible="{Binding IsAllClientsShownOnTheMap}"
+                               Text="{Binding SelectedClientVM.UserFullName}"
+                               TextColor="{Binding DefaultSelectedClientColor}" 
+                               HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+
+                            <Label Grid.Column="1" BindingContext="{Binding SelectedOrderVM}" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="2" BindingContext="{Binding SelectedOrderVM}" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="3" BindingContext="{Binding SelectedOrderVM}" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="4" BindingContext="{Binding SelectedOrderVM}" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="5" BindingContext="{Binding SelectedOrderVM}" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding DriverConfirmationCommand}">
+                                </TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="3*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="{Binding SelectedDriverVM.UserFullName}" TextColor="{Binding DefaultDriverColor}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="1" BindingContext="{Binding SelectedDriverVM}" Text="{Binding UserPhoneNumber}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="2" BindingContext="{Binding SelectedDriverVM}" Text="{Binding UserEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="3" BindingContext="{Binding SelectedDriverVM}" Text="{Binding Order.StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="4" BindingContext="{Binding SelectedDriverVM}" Text="{Binding Order.EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                            <Label Grid.Column="5" BindingContext="{Binding SelectedDriverVM}" Text="{Binding Order.OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
+                        </Grid>
                     </Grid>
 
                     <Border Grid.Column="1">
@@ -224,7 +247,7 @@
                             <Label Text="-" Margin="0,5,0,0"></Label>
                             <Label Text="Водитель" Margin="0,5,0,0"></Label>
                         </HorizontalStackLayout>
-
+                        <Button Text="TEST" Command="{Binding test}" CommandParameter="{Binding Source={x:Reference mapView}}"></Button>
                     </VerticalStackLayout>
                 </Grid>
             </Grid>

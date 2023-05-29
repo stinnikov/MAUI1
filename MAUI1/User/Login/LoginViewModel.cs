@@ -1,6 +1,8 @@
-﻿using MAUI1.User.Client;
+﻿using MAUI1.User.Admin;
+using MAUI1.User.Client;
 using MAUI1.User.Dispatcher;
 using MAUI1.User.Driver;
+using OsmSharp.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,52 +19,37 @@ namespace MAUI1.User.Login
         {
             LoginCommand = new Command(async obj =>
             {
-                //int d = 1;
-                //if(d == 1)
-                //Application.Current.MainPage = new NavigationPage(new Dispatcher.TaxiDispatcherPage());
-                //if(d == 0)
-                //{
-                //    Application.Current.MainPage = new NavigationPage(new User.Driver.DriverPage());
-                //}
                 object[] loginStrings = (object[])obj;
                 string login = loginStrings[0].ToString();
                 string password = loginStrings[1].ToString();
-                string response = null;
                 if (login != null && password != null)
                 {
-                   response = await TCPCLient.SendLoginQueryToServerAsync(login, password);
-                }
-                if (response != null)
-                {
-                    if (response != null)
+                   var userVM = await TCPCLient.SendLoginQueryToServerAsync(login, password);
+                    if (userVM != null)
                     {
-                        if (response == "Client")
+                        if (userVM.GetType() == typeof(ClientViewModel))
                         {
-                            Application.Current.MainPage = new ClientPage();
+                            Application.Current.MainPage = new ClientPage(userVM as ClientViewModel);
                         }
-                        else if(response == "Driver")
+                        else if (userVM.GetType() == typeof(DriverViewModel))
                         {
-                            Application.Current.MainPage = new DriverPage(new DriverViewModel());
+                            Application.Current.MainPage = new DriverPage(userVM as DriverViewModel);
                         }
-                        else if(response == "Dispatcher")
+                        else if (userVM.GetType() == typeof(TaxiDispatcherViewModel))
                         {
-                            Application.Current.MainPage = new TaxiDispatcherPage();
+                            Application.Current.MainPage = new TaxiDispatcherPage(userVM as TaxiDispatcherViewModel);
                         }
-                        else if(response == "Administrator")
+                        else if (userVM.GetType() == typeof(AdminVM))
                         {
-                            Application.Current.MainPage = new Admin.AdminPage();
+                            Application.Current.MainPage = new Admin.AdminPage(userVM as AdminVM);
                         }
                         else
                         {
-                            
                         }
-                    }
-                    else
-                    {
-                        //(loginStrings[0] as Entry).Text = "";
-                        //(loginStrings[1] as Entry).Text = "";
+
                     }
                 }
+                
             });
         }
     }

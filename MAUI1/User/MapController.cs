@@ -7,6 +7,7 @@ using Mapsui.UI.Maui;
 using Mapsui.Utilities;
 using Mapsui.Widgets;
 using Mapsui.Widgets.ButtonWidget;
+using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace MAUI1.User
     {
         public bool IsMapClickable = true;
         internal MapView mapView { get; set; }
-        public ICommand ButtonCommand { get; set; }
+
         private Location _location = new();
         public Location Location { get { return _location; } set { if (value != null) { _location = value; } } }
         private CancellationTokenSource _cancelTokenSource;
@@ -33,82 +34,6 @@ namespace MAUI1.User
         {
             this.mapView = mapView;
             MapViewInit();
-            ButtonCommand = new Command(async obj =>
-            {
-                char[] separators = { ',', '.', ' ' };
-                object[] objects = obj as object[];
-                string target_string = objects[0].ToString().ToLower();
-                string[] target_string_splitted = target_string.Split(separators).Where(item => item != "").ToArray();
-                string destination_string = objects[1].ToString().ToLower();
-                string[] destination_string_splitted = destination_string.Split(separators);
-                target_string = "";
-                destination_string = "";
-                foreach (string str in target_string_splitted)
-                {
-                    if (str == "ул")
-                    {
-                        target_string += "улица ";
-                        continue;
-                    }
-                    if (str == "д")
-                    {
-                        target_string += "дом ";
-                        continue;
-                    }
-                    if (str == "кв")
-                    {
-                        target_string += "квартира ";
-                        continue;
-                    }
-                    target_string += str + " ";
-                }
-                foreach (string str in destination_string_splitted)
-                {
-                    if (str == "ул")
-                    {
-                        destination_string += "улица ";
-                        continue;
-                    }
-                    else if (str == "д")
-                    {
-                        destination_string += "дом ";
-                        continue;
-                    }
-                    else if (str == "кв" || str == "кварт")
-                    {
-                        destination_string += "квартира ";
-                        continue;
-                    }
-                    destination_string += str + " ";
-                }
-                IEnumerable<Location> locations = await Geocoding.Default.GetLocationsAsync(target_string);
-                Location location = locations?.FirstOrDefault();
-                var (x, y) = SphericalMercator.FromLonLat(location.Longitude, location.Latitude);
-                var pin1 = new Pin(mapView)
-                {
-                    Position = new Mapsui.UI.Maui.Position(location.Latitude, location.Longitude),
-                    Type = PinType.Pin,
-                    Label = $"DDDDDDDDDDDDDDDDDDDD",
-                    Address = target_string,
-                    Scale = 0.7F,
-                    Color = Colors.Red,
-                };
-                locations = await Geocoding.Default.GetLocationsAsync(destination_string);
-                location = locations?.FirstOrDefault();
-                (x, y) = SphericalMercator.FromLonLat(location.Longitude, location.Latitude);
-                var pin2 = new Pin(mapView)
-                {
-                    Position = new Mapsui.UI.Maui.Position(location.Latitude, location.Longitude),
-                    Type = PinType.Pin,
-                    Label = $"DDDDDDDDDDDDDDDDDDDD",
-                    Address = destination_string,
-                    Scale = 0.7F,
-                    Color = Colors.Red,
-                };
-                mapView.Pins.Add(pin1);
-                mapView.Pins.Add(pin2);
-                mapView.Refresh();
-            });
         }
         public static async Task<string> GetAddressFromLonLat(double longitude, double latitude)
         {
@@ -122,28 +47,6 @@ namespace MAUI1.User
         }
         public static async Task<(double,double)> GetLonLatFromAddress(string address)
         {
-            //char[] separators = {'.', ' ' };
-            //string[] splitted_address = address.Split(separators).Where(item => item != "").ToArray();
-            //address = "";
-            //foreach (string str in splitted_address)
-            //{
-            //    if (str == "ул")
-            //    {
-            //        address += "улица ";
-            //        continue;
-            //    }
-            //    if (str == "д")
-            //    {
-            //        address += "дом ";
-            //        continue;
-            //    }
-            //    if (str == "кв")
-            //    {
-            //        address += "квартира ";
-            //        continue;
-            //    }
-            //    address += str + " ";
-            //}
             IEnumerable<Location> locations = await Geocoding.Default.GetLocationsAsync(address);
             Location location = locations?.FirstOrDefault();
             if (location != null)
@@ -163,6 +66,15 @@ namespace MAUI1.User
             if (status == PermissionStatus.Granted)
             {
                 ToggleGPS(true);
+                var token = TCPCLient.GetAccessToken();
+                System.Timers.Timer timer = new System.Timers.Timer();
+                timer.Interval = 10000;
+                timer.Elapsed += async (o, e) =>
+                {
+                    GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+                    var loc = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+                    TCPCLient.RefreshLocationDataOnServer(loc.Longitude, loc.Latitude);
+                };
             }
             CreateButtons();
             if (IsMapClickable)
@@ -410,8 +322,8 @@ namespace MAUI1.User
             try
             {
                 _isCheckingLocation = true;
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
                 _cancelTokenSource = new CancellationTokenSource();
+                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
                 var loc = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
                 if (_cancelTokenSource.Token.IsCancellationRequested)
                 {
@@ -422,6 +334,8 @@ namespace MAUI1.User
                 {
                     Location = loc;
                     mapView.MyLocationLayer.UpdateMyLocation(new Mapsui.UI.Maui.Position(Location.Latitude, Location.Longitude));
+                    mapView.Refresh();
+                    TCPCLient.RefreshLocationDataOnServer(loc.Longitude, loc.Latitude);
                 }
 
             }
