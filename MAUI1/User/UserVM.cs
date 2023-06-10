@@ -1,4 +1,6 @@
-﻿using Mapsui.UI.Maui;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using Mapsui.UI.Maui;
+using MAUI1.User.Login;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -100,6 +102,7 @@ namespace MAUI1.User
         { 
 
         });
+        public ICommand LogoutCommand { get; set; }
         public ICommand ReceiveImageCommand { get; private set; }
 
         public ImageSource SelectedImage
@@ -118,6 +121,22 @@ namespace MAUI1.User
             ReceiveImageCommand = new Command(async () => { 
                 await TCPCLient.ReceiveAvatar();
                 SetAvatar(personalFolderPath);
+            });
+            LogoutCommand = new Command(async() =>
+            {
+                var accepted = await App.Current.MainPage.DisplayAlert("Выход из аккаунта", "Вы уверены?", "Да", "Нет");
+                if (accepted)
+                {
+                    if (File.Exists(TCPCLient.accessTokenPath))
+                    {
+                        File.Delete(TCPCLient.accessTokenPath);
+                        var currentPage = App.Current.MainPage;
+                        var loginPage = new LoginPage();
+                        this.Navigation.InsertPageBefore(currentPage,loginPage);
+                        await this.Navigation.PushAsync(loginPage);
+                        this.Navigation.RemovePage(currentPage);
+                    }
+                }
             });
         }
         public UserVM(UserModel user)
@@ -139,6 +158,23 @@ namespace MAUI1.User
                 }
             }
             return true;
+        }
+        public virtual async Task<object> Poll()
+        {
+            try
+            {
+                object data = await TCPCLient.PollServerData(this.User);
+                if (data != null)
+                {
+                    return data;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+                return null;
+            }
         }
         public void GetAvatar()
         {

@@ -4,7 +4,8 @@
              x:Class="MAUI1.User.Login.LoginPage"
              xmlns:log="clr-namespace:MAUI1.User.Login"
              xmlns:mconv="clr-namespace:MAUI1.Converters"
-             Title="Chel" >
+             NavigationPage.HasNavigationBar="False"
+             Title="" >
     
     <ContentPage.Resources>
 
@@ -15,25 +16,42 @@
                 <Setter Property="Margin" Value="0,10,0,0"></Setter>
                 <Setter Property="FontSize" Value="14"></Setter>
             </Style>
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="Lavender"></Setter>
+                <Setter Property="PlaceholderColor" Value="DarkGrey"></Setter>
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid>
+    <Border BackgroundColor="Transparent">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-    <Label Text="Login" Grid.Column="1" FontSize="32" HorizontalOptions="Start" VerticalOptions="End"></Label>
-    <VerticalStackLayout Grid.Row="1" Grid.Column="1">
-        <Label Text="Номер телефона" TextColor="Lavender"  Style="{x:StaticResource LabelStyle}"></Label>
+            <VerticalStackLayout>
+                <Label Text="Login" FontSize="32" HorizontalOptions="Start" VerticalOptions="End"></Label>
+                <HorizontalStackLayout>
+                    <Label Text="Вы ещё не зарегистрированы?"></Label>
+                    <Label Margin="10,0,0,0" Text="Регистрация" FontSize="14" FontAttributes="Bold" TextColor="Blue" TextDecorations="Underline">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped">
+                                
+                            </TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="1" Margin="0,10,0,0">
+        <Label Text="Номер телефона"  Style="{x:StaticResource LabelStyle}"></Label>
         <Border BackgroundColor="Lavender">
             <Entry x:Name="Login"  BackgroundColor="Black" FontSize="14" Placeholder="Введите логин" Text="{Binding LoginInputs.Number}"></Entry>
         </Border>
-        <Label Text="Пароль" Grid.Row="0" TextColor="Lavender" Style="{StaticResource LabelStyle}"></Label>
+        <Label Text="Пароль" Grid.Row="0" Style="{StaticResource LabelStyle}"></Label>
 
         <Border BackgroundColor="Lavender">
             <Entry x:Name="Password" BackgroundColor="Black" FontSize="14" Placeholder="Введите пароль" Text="{Binding LoginInputs.Password}"/>
         </Border>
-        <Button Grid.Row="2" Grid.Column="1"  VerticalOptions="StartAndExpand" Margin="0,20,0,0" Style="{StaticResource buttonStyleWithTrigger}" Command="{Binding LoginCommand}" Text="Войти">
+        <Button VerticalOptions="StartAndExpand" Margin="0,20,0,0" Style="{StaticResource buttonStyleWithTrigger}" Command="{Binding LoginCommand}" Text="Войти">
             <Button.CommandParameter>
                 <MultiBinding Converter="{StaticResource RConverter}">
                     <Binding Source="{x:Reference Login}" Path="Text"></Binding>
@@ -43,4 +61,5 @@
         </Button>
     </VerticalStackLayout>
     </Grid>
+    </Border>
 </ContentPage>

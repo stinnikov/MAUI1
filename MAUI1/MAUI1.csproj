@@ -48,7 +48,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\phone.svg" />
+	  <None Remove="Resources\Images\pin.svg" />
+	  <None Remove="Resources\Images\raindrop.svg" />
 	  <None Remove="Resources\Images\taxi.svg" />
+	  <None Remove="Resources\Images\user.svg" />
 	  <None Remove="Resources\Images\wt.svg" />
 	</ItemGroup>
 
@@ -101,10 +105,16 @@
 	  <MauiXaml Update="Order\OrderHandlerPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="User\Client\ClientOrderDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="User\Dispatcher\OrdersCollectionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="User\Dispatcher\TaxiDispatcherPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="User\UserAccountPage.xaml">
+	  <MauiXaml Update="User\Driver\DriverOrderDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

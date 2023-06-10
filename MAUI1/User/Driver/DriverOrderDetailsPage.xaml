@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI1.User.Driver.DriverOrderDetailsPage"
+             Title="DriverOrderDetailsPage">
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary>
+                <Style TargetType="Border">
+                    <Setter Property="BackgroundColor" Value="Transparent"></Setter>
+                </Style>
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="10*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="1" Grid.Column="1" BackgroundColor="Transparent" Stroke="Black" StrokeThickness="1.15">
+            <VerticalStackLayout Margin="5,5,0,0" Spacing="10">
+
+                <Label Text="Детали поездки" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center"></Label>
+
+                <Border HeightRequest="50">
+                    <ScrollView Orientation="Horizontal" Margin="5,0,0,0" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="5">
+                            <Label x:Name="LabelUserName" Text="Имя клиента:"></Label>
+                            <Label Text="{Binding ClientName}"></Label>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+                </Border>
+
+                <Border HeightRequest="50">
+                    <HorizontalStackLayout Margin="5,0,0,0" VerticalOptions="Center" Spacing="5">
+                        <Label x:Name="LabelPhoneNumber" Text="Телефон:"></Label>
+                        <Label Text="{Binding ClientPhoneNumber}"></Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Border HeightRequest="50">
+                    <ScrollView Orientation="Horizontal" Margin="5,0,0,0" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="5">
+                            <Label x:Name="LabelStartingPoint" Text="Точка отправки:"></Label>
+                            <Label Text="{Binding StartingPoint}"></Label>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+                </Border>
+
+                <Border HeightRequest="50">
+                    <ScrollView Orientation="Horizontal" Margin="5,0,0,0" VerticalOptions="CenterAndExpand">
+                        <HorizontalStackLayout Spacing="5">
+                            <Label x:Name="LabelEndingPoint" Text="Точка прибытия:"></Label>
+                            <Label Text="{Binding EndingPoint}"></Label>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+                </Border>
+
+                <Border HeightRequest="50">
+                    <HorizontalStackLayout Margin="5,0,0,0" VerticalOptions="Center" Spacing="5">
+                        <Label x:Name="LabelOrderStatus" Text="Статус:"></Label>
+                        <Label Text="{Binding OrderStatus}"></Label>
+                    </HorizontalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

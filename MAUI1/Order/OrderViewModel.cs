@@ -10,19 +10,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MAUI1.User.Dispatcher;
+using System.Diagnostics.Contracts;
 
 namespace MAUI1.User.Order
 {
     public class OrderViewModel : ViewModel
     {
-        public ClientViewModel ClientVM { get; }
+        public ClientViewModel ClientVM { get; set; }
         private DriverViewModel _driverViewModel;
-        public DriverViewModel DriverVM 
+        public DriverViewModel DriverVM
         {
-            get => _driverViewModel; 
-            set 
+            get => _driverViewModel;
+            set
             {
-                if(value != null)
+                if (value != null)
                 {
                     _driverViewModel = value;
                     OnPropertyChanged(nameof(DriverFullName));
@@ -40,16 +41,16 @@ namespace MAUI1.User.Order
         public OrderModel Order { get; set; }
         public ICommand AcceptOrderCommand { get; set; }
         public ICommand DeclineOrderCommand { get; set; }
-        public ICommand CompleteWithQuestionMarkCommand { get;set; }
+        public ICommand CompleteWithQuestionMarkCommand { get; set; }
         public ICommand CompleteOrderCommand { get; set; }
         public ICommand UndoCompletionCommand { get; set; }
         public string ClientName => ClientVM.UserFullName;
         public string ClientEmail => ClientVM.UserEmail;
-        public string ClientPhone => ClientVM.UserPhoneNumber;
+        public string ClientPhoneNumber => ClientVM.UserPhoneNumber;
         public string StartingPoint
         {
             get => Order.StartingPoint;
-            set 
+            set
             {
                 if (value != null)
                 {
@@ -75,14 +76,14 @@ namespace MAUI1.User.Order
             get => Order.Price;
             private set
             {
-                if(value >= 0)
+                if (value >= 0)
                 {
                     Order.Price = value;
                     OnPropertyChanged("OrderPrice");
                 }
             }
         }
-        public string OrderStatus 
+        public string OrderStatus
         {
             get
             {
@@ -90,19 +91,19 @@ namespace MAUI1.User.Order
                 {
                     return "Ожидает";
                 }
-                else if(Order.Status == MAUI1.User.Order.OrderStatusType.InProgress)
+                else if (Order.Status == MAUI1.User.Order.OrderStatusType.InProgress)
                 {
                     return "Выполняется";
                 }
-                else if(Order.Status == MAUI1.User.Order.OrderStatusType.CompletedWithQuestionMark)
+                else if (Order.Status == MAUI1.User.Order.OrderStatusType.CompletedWithQuestionMark)
                 {
                     return "Завершён?";
                 }
-                else if(Order.Status == MAUI1.User.Order.OrderStatusType.Completed)
+                else if (Order.Status == MAUI1.User.Order.OrderStatusType.Completed)
                 {
                     return "Завершён";
                 }
-                else if(Order.Status == MAUI1.User.Order.OrderStatusType.Cancelled)
+                else if (Order.Status == MAUI1.User.Order.OrderStatusType.Cancelled)
                 {
                     return "Отменён";
                 }
@@ -139,6 +140,10 @@ namespace MAUI1.User.Order
             ClientVM = cvm;
             ClientVM.Order = this;
             OrderViewModelCommandsInit();
+        }
+        public OrderViewModel()
+        {
+
         }
         public void OrderViewModelCommandsInit()
         {

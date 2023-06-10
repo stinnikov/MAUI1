@@ -4,11 +4,13 @@ using Mapsui.UI.Maui;
 using MAUI1.User.Client;
 using MAUI1.User.Dispatcher.Orders;
 using MAUI1.User.Driver;
+using MAUI1.User.Maps;
 using MAUI1.User.Order;
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,31 +29,46 @@ namespace MAUI1.User.Dispatcher
         public Color DefaultClientColor { get { return Colors.Red; } }
         public Color DefaultSelectedClientColor => Colors.DeepPink;
         public Color DefaultDriverColor { get { return Colors.SkyBlue; } }
-        public static TDispatcherContext DispatcherContext { get; set; } = new TDispatcherContext();
-        public static List<LocationModel> Locations { get; set; }
         public TaxiDispatcherModel TaxiDispatcher { get; set; }
-        public OrderFilterType OrderFilter { get; set; } = OrderFilterType.Все;
-        public ObservableCollection<OrderViewModel> Orders 
+        private OrderFilterType _orderFilter = OrderFilterType.Все;
+        public OrderFilterType OrdersFilter
+        {
+            get => _orderFilter;
+            set
+            {
+                _orderFilter = value;
+                Orders = null;
+                OnPropertyChanged(nameof(OrdersFilter));
+            }
+        }
+
+        public ObservableCollection<OrderViewModel> _orders;
+        public ObservableCollection<OrderViewModel> Orders
         {
             get
             {
-                if (OrderFilter == OrderFilterType.Все)
+                return _orders;
+            }
+            set
+            {
+                if (OrdersFilter == OrderFilterType.Все)
                 {
-                   return TaxiDispatcher.OrdersCollection;
+                    _orders = TaxiDispatcher.OrdersCollection;
                 }
-                else if(OrderFilter == OrderFilterType.Ожидает)
+                else if (OrdersFilter == OrderFilterType.Ожидает)
                 {
-                    return TaxiDispatcher.OrdersCollection.Where(item => item.Order.Status == OrderStatusType.Waiting).ToObservableCollection();
+                    _orders = TaxiDispatcher.OrdersCollection.Where(item => item.Order.Status == OrderStatusType.Waiting).ToObservableCollection();
                 }
                 else
                 {
-                    return TaxiDispatcher.OrdersCollection.Where(item => item.Order.Status == OrderStatusType.InProgress).ToObservableCollection();
+                    _orders = TaxiDispatcher.OrdersCollection.Where(item => item.Order.Status == OrderStatusType.InProgress).ToObservableCollection();
                 }
+                OnPropertyChanged(nameof(Orders));
             }
-        } 
-        
+        }
+
         private bool _isShownAllOrders = true;
-        public bool IsShownAllOrders 
+        public bool IsShownAllOrders
         {
             get => _isShownAllOrders;
             set
@@ -70,71 +87,20 @@ namespace MAUI1.User.Dispatcher
                 OnPropertyChanged("IsDriversShownOnTheMap");
             }
         }
-        private bool _isAllClientsShownOnTheMap = false;
-        public bool IsAllClientsShownOnTheMap
-        {
-            get => _isAllClientsShownOnTheMap;
-            set
-            {
-                _isAllClientsShownOnTheMap = value;
-                if(value && SelectedClientVM != null)
-                {
-                    selectedClientStartingPin.Color = DefaultSelectedClientColor;
-                    selectedClientEndingPin.Color = DefaultSelectedClientColor;
-                }
-                else if(SelectedClientVM != null)
-                {
-                    selectedClientStartingPin.Color = DefaultClientColor;
-                    selectedClientEndingPin.Color = DefaultClientColor;
-                }
-                OnPropertyChanged("IsAllClientsShownOnTheMap");
-            }
-        }
         private Pin selectedClientStartingPin;
         private Pin selectedClientEndingPin;
         private DriverViewModel _selectedDriverViewModel;
-        public DriverViewModel SelectedDriverVM 
+        public DriverViewModel SelectedDriverVM
         {
             get => _selectedDriverViewModel;
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     _selectedDriverViewModel = value;
                     OnPropertyChanged(nameof(SelectedDriverVM));
                 }
             }
-        }
-        private ClientViewModel _selectedClientVM;
-        public ClientViewModel SelectedClientVM 
-        { 
-            get { return _selectedClientVM; } 
-            set 
-            { 
-                if (value != null) 
-                {
-                    if (selectedClientStartingPin != null && selectedClientEndingPin != null)
-                    {
-                        selectedClientStartingPin.Color = DefaultClientColor;
-                        selectedClientEndingPin.Color = DefaultClientColor;
-                    }
-                    _selectedClientVM = value;
-                    selectedClientStartingPin = (this.DispatcherMapController?.OrderPinDataCollection?.Where(item => item.Client == SelectedClientVM).FirstOrDefault()?.StartingPointPin);
-                    selectedClientEndingPin = (this.DispatcherMapController?.OrderPinDataCollection?.Where(item => item.Client == SelectedClientVM).FirstOrDefault()?.EndingPointPin);
-                    if (IsAllClientsShownOnTheMap)
-                    {
-                        selectedClientStartingPin.Color = DefaultSelectedClientColor;
-                        selectedClientEndingPin.Color = DefaultSelectedClientColor;
-                    }
-                    else
-                    {
-                        selectedClientStartingPin.Color = DefaultClientColor;
-                        selectedClientEndingPin.Color = DefaultClientColor;
-                    }
-                    SelectedOrderVM = value.Order;
-                    OnPropertyChanged(nameof(SelectedClientVM)); 
-                }
-            } 
         }
         private OrderViewModel _selectedOrderVM;
         public OrderViewModel SelectedOrderVM
@@ -142,7 +108,7 @@ namespace MAUI1.User.Dispatcher
             get => _selectedOrderVM;
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     _selectedOrderVM = value;
                     OnPropertyChanged(nameof(SelectedOrderVM));
@@ -155,45 +121,54 @@ namespace MAUI1.User.Dispatcher
             get => _dispatcherMapController;
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     _dispatcherMapController = value;
+                    _dispatcherMapController.IsMyLococationNeedable = false;
                 }
             }
         }
-        
+
         public ICommand ShowClientPinCommand { get; set; }
-        public ICommand ClientOrderSelectedCommand { get; set; }
+        public ICommand SelectOrderCommand { get; set; }
+        public ICommand MoveToOrdersPageCommand { get; set; }
         public ICommand DriversOnTheMapShowCheckedChangedCommand { get; set; }
         public ICommand AllClientOnTheMapCheckedChangedCommand { get; set; }
         public ICommand DriverConfirmationCommand { get; set; }
+        public ICommand SelectFilterCommand { get; set; }
         public ICommand test { get; set; }
-        public TaxiDispatcherViewModel(TaxiDispatcherModel tdispatcher, MapView mapview, List<OrderPinData> pins)
+        public TaxiDispatcherViewModel(TaxiDispatcherModel tdispatcher, MapView mapview)
         {
             User = tdispatcher;
             TaxiDispatcher = tdispatcher;
-            DispatcherMapController = new(mapview, pins, this);
+            DispatcherMapController = new(mapview, this);
             DispatcherVMInit();
         }
         public TaxiDispatcherViewModel(TaxiDispatcherModel tdispatcher)
         {
             User = tdispatcher;
             TaxiDispatcher = tdispatcher;
+            _orders = TaxiDispatcher.OrdersCollection;
             DispatcherVMInit();
         }
         private void DispatcherVMInit()
         {
-            Locations = DispatcherContext.Locations.Local.ToList();
-            ShowClientPinCommand = new Command(obj =>
+            SelectOrderCommand = new Command(async obj =>
             {
-                ShowClientPin(obj as UserVM);
-            });
-            ClientOrderSelectedCommand = new Command(obj =>
-            {
-                var clientVM = (obj as OrderViewModel).ClientVM;
-                var pin = ShowClientPin(clientVM);
-                IsShownAllOrders = !IsShownAllOrders;
-                this.DispatcherMapController.CenterMapOnPin(pin.StartingPointPin);
+                OrderViewModel order = obj as OrderViewModel;
+                var КлиентVM = order.ClientVM;
+                var pin = DispatcherMapController.OrderPinDataCollection.FirstOrDefault(item => item.Client == КлиентVM);
+                if (pin != null)
+                {
+                    
+                    pin.StartingPointPin.IsVisible = true;
+                    pin.EndingPointPin.IsVisible = true;
+                    this.DispatcherMapController.mapView.Pins.Add(pin.StartingPointPin);
+                    this.DispatcherMapController.mapView.Pins.Add(pin.EndingPointPin);
+                    this.DispatcherMapController.CenterMapOnPin(pin.StartingPointPin);
+                    SelectedOrderVM = order;
+                }
+                await Navigation.PopAsync();
             });
             DriversOnTheMapShowCheckedChangedCommand = new Command(() =>
             {
@@ -218,215 +193,108 @@ namespace MAUI1.User.Dispatcher
                     }
                 }
             });
-            AllClientOnTheMapCheckedChangedCommand = new Command(() =>
-            {
-                if(IsAllClientsShownOnTheMap)
-                {
-                    foreach(var element in DispatcherMapController.OrderPinDataCollection)
-                    {
-                        if (element.Client.GetType() != typeof(ClientViewModel))
-                            continue;
-                        element.StartingPointPin.IsVisible = true;
-                        element.EndingPointPin.IsVisible = true;
-                    }
-                }
-                else
-                {
-                    foreach (var element in DispatcherMapController.OrderPinDataCollection)
-                    {
-                        if (element.Client.GetType() != typeof(ClientViewModel))
-                            continue;
-                        if (element.Client == SelectedClientVM)
-                        {
-                            continue;
-                        }
-                        element.StartingPointPin.IsVisible = false;
-                        element.EndingPointPin.IsVisible = false;
-                    }
-                }
-            });
             DriverConfirmationCommand = new Command(
-                async() =>
+                async () =>
                 {
-                    bool accepted = await Application.Current.MainPage.DisplayAlert("","Потвердить выбор водителя?", "Да", "Нет");
-                    if(accepted)
+                    bool accepted = await Application.Current.MainPage.DisplayAlert("", "Потвердить выбор водителя?", "Да", "Нет");
+                    if (accepted)
                     {
-                        TCPCLient.CreateDriverOrderRequest(SelectedDriverVM.UserPhoneNumber, SelectedClientVM.UserPhoneNumber);
+                        TCPCLient.CreateDriverOrderRequest(SelectedDriverVM.UserPhoneNumber, SelectedOrderVM.ClientPhoneNumber);
                     }
                 });
-            test = new Command(obj =>
+            MoveToOrdersPageCommand = new Command(async () =>
             {
-                var mapView = obj as MapView;
-                //var pins = GetPinData();
-                
-                DriverViewModel driver = new() { User = new("driver", "driver", "89130581263", "driver@mail.ru", "driver", UserType.Driver) };
-                
-                
-                ClientViewModel client = new() { User = new("client", "client", "89130581262", "client@mail.ru", "client", UserType.Client) };
-                OrderModel order1 = new OrderModel("Улица Киренского 26, Красноярск", "Проспект Свободный 76Н", client.User);
-                OrderViewModel ovm = new OrderViewModel(order1, client, driver);
-                var pin1 = new Pin(mapView) //водила
+                await Navigation.PushAsync(new OrdersCollectionPage(this));
+            });
+            SelectFilterCommand = new Command(async () =>
+            {
+                string action = await Navigation.NavigationStack.LastOrDefault().DisplayActionSheet($"Фильтр заказов (Текущий:{OrdersFilter.ToString()})", "Назад", null, OrderFilterType.Все.ToString(), OrderFilterType.Выполняется.ToString(), OrderFilterType.Ожидает.ToString());
+                if (action != "Назад")
                 {
-                    Position = new Mapsui.UI.Maui.Position(53.12857, 90.51241),
-                    Type = PinType.Pin,
-                    Label = $"Точка отправки заказа водителя",
-                    Address = driver.Order.StartingPoint,
-                    Scale = 0.7F,
-                    Color = this.DefaultDriverColor,
-                };
-                var pin2 = new Pin(mapView) //водила
-                {
-                    Position = new Mapsui.UI.Maui.Position(53.12519f, 90.52708),
-                    Type = PinType.Pin,
-                    Label = $"Точка прибытия заказа водителя",
-                    Address = driver.Order.EndingPoint,
-                    Scale = 0.7F,
-                    Color = this.DefaultDriverColor//TaxiDispatcherViewModel.DefaultDriverColor,
-                };
-                var pin3 = new Pin(mapView) //клиент
-                {
-                    Position = new Mapsui.UI.Maui.Position(53.13029, 90.52082),
-                    Label = $"Точка отправки заказа клиента",
-                    Address = client.Order.StartingPoint,
-                    Scale = 0.7F,
-                    Color = this.DefaultClientColor,
-                };
-                var pin4 = new Pin(mapView) //клиент
-                {
-                    Position = new Mapsui.UI.Maui.Position(53.13027, 90.5345),
-                    Type = PinType.Pin,
-                    Label = $"Точка прибытия заказа клиента",
-                    Address = client.Order.EndingPoint,
-                    Scale = 0.7F,
-                    Color = this.DefaultClientColor,
-                };
-                OrderPinData upin1 = new OrderPinData(pin1, pin2, client,driver);
-                List<OrderPinData> pins = new List<OrderPinData>() { upin1 };
-
-                this.DispatcherMapController = new DispatcherMapController(mapView, pins, this);
-                this.TaxiDispatcher.OrdersCollection.Add(client.Order);
+                    if (action == "Все")
+                    {
+                        OrdersFilter = OrderFilterType.Все;
+                    }
+                    else if (action == "Ожидает")
+                    {
+                        OrdersFilter = OrderFilterType.Ожидает;
+                    }
+                    else if (action == "Выполняется")
+                    {
+                        OrdersFilter = OrderFilterType.Выполняется;
+                    }
+                }
             });
         }
         public void DispatcherMapViewInit(MapView mapview, List<OrderPinData> pins)
         {
-            DispatcherMapController = new(mapview, pins, this);
+            DispatcherMapController = new(mapview, this);
         }
-        public async void SetPins()
+        public new async void Poll()
         {
-            List<OrderPinData> userPins = new List<OrderPinData>();
-            Pin startingPointPin = default;
-            Pin endingPointPin = default;
-            foreach(var element in TaxiDispatcher.OrdersCollection)
+           var data = await base.Poll() as object[];
+            if (data != null)
             {
-                double startingPointLongitude;
-                double startingPointLatitude;
-                var startingPointLocation = Locations.FirstOrDefault(item => item.Address == element.Order.StartingPoint);
-                if(startingPointLocation != null)
+                var ordersCollection = (data[0] as List<OrderViewModel>).ToObservableCollection();
+                var driversCollection = (data[1] as List<DriverViewModel>).ToObservableCollection();
+                if (data != null)
                 {
-                    startingPointLongitude = startingPointLocation.Longitude;
-                    startingPointLatitude = startingPointLocation.Latitude;
-                    startingPointPin = new Pin()
+                    if (this.TaxiDispatcher.OrdersCollection.Count != 0)
                     {
-                        Position = new Mapsui.UI.Maui.Position(startingPointLatitude, startingPointLongitude),
-                        Type = PinType.Pin,
-                        Label = $"Точка отправки заказа",
-                        Address = element.Order.EndingPoint,
-                        Scale = 0.7F,
-                        Color = this.DefaultClientColor,
-                    };
-                }
-                else
-                {
-                    var locations = await Geocoding.GetLocationsAsync(element.Order.StartingPoint);
-                    var loc = locations.FirstOrDefault();
-                    if (loc != null)
-                    {
-                        startingPointLongitude = loc.Longitude;
-                        startingPointLatitude = loc.Latitude;
-                        Locations.Add(new LocationModel(element.Order.StartingPoint, startingPointLongitude, startingPointLatitude));
-                        startingPointPin = new Pin()
+                        foreach (var element in ordersCollection)
                         {
-                            Position = new Mapsui.UI.Maui.Position(startingPointLatitude, startingPointLongitude),
-                            Type = PinType.Pin,
-                            Label = $"Точка отправки заказа",
-                            Address = element.Order.EndingPoint,
-                            Scale = 0.7F,
-                            Color = this.DefaultClientColor,
-                        };
-                    }
-                }
-
-                double endingPointLongitude;
-                double endingPointLatitude;
-                var endingPointLocation = Locations.FirstOrDefault(item => item.Address == element.Order.EndingPoint);
-                if (endingPointLocation != null)
-                {
-                    endingPointLongitude = endingPointLocation.Longitude;
-                    endingPointLatitude = endingPointLocation.Latitude;
-                    endingPointPin = new Pin()
-                    {
-                        Position = new Mapsui.UI.Maui.Position(endingPointLatitude, endingPointLongitude),
-                        Type = PinType.Pin,
-                        Label = $"Точка прибытия заказа",
-                        Address = element.Order.EndingPoint,
-                        Scale = 0.7F,
-                        Color = this.DefaultClientColor,
-                    };
-                }
-                else
-                {
-                    var locations = await Geocoding.GetLocationsAsync(element.Order.EndingPoint);
-                    var loc = locations.FirstOrDefault();
-                    if (loc != null)
-                    {
-                        endingPointLongitude = loc.Longitude;
-                        endingPointLatitude = loc.Latitude;
-                        Locations.Add(new LocationModel(element.Order.StartingPoint, endingPointLongitude, endingPointLatitude));
-                        endingPointPin = new Pin()
-                        {
-                            Position = new Mapsui.UI.Maui.Position(endingPointLatitude, endingPointLongitude),
-                            Type = PinType.Pin,
-                            Label = $"Точка отправки заказа",
-                            Address = element.Order.EndingPoint,
-                            Scale = 0.7F,
-                            Color = this.DefaultClientColor,
-                        };
-                    }
-                }
-                if (startingPointPin != default && endingPointPin != default)
-                {
-                    if (element.DriverVM == null)
-                    {
-                        userPins.Add(new OrderPinData(startingPointPin, endingPointPin, element.ClientVM));
+                            var order = this.TaxiDispatcher.OrdersCollection.FirstOrDefault(item => item.ClientPhoneNumber == element.ClientPhoneNumber);
+                            if (order != null)
+                            {
+                                order.Order = element.Order;
+                            }
+                        }
                     }
                     else
                     {
-                        userPins.Add(new OrderPinData(startingPointPin, endingPointPin, element.ClientVM, element.DriverVM));
+                        this.TaxiDispatcher.OrdersCollection = ordersCollection;
                     }
+                    if (this.TaxiDispatcher.Drivers.Count != 0)
+                    {
+                        foreach (var element in driversCollection)
+                        {
+                            var driver = this.TaxiDispatcher.Drivers.FirstOrDefault(item => item.UserPhoneNumber == element.UserPhoneNumber);
+                            if (driver != null)
+                            {
+                                driver.Order = element.Order;
+                                driver.User.Longitude = element.User.Longitude;
+                                driver.User.Latitude = element.User.Latitude;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this.TaxiDispatcher.Drivers = driversCollection;
+                    }
+                    System.Timers.Timer timer = new System.Timers.Timer();
+                    timer.Elapsed += (o, e) => { timer.Stop(); DispatcherMapController?.SetPins(); this.Poll(); };
+                    timer.Interval = 5 * 1000;
+                    timer.Start();
                 }
             }
-            if (userPins.Count != 0)
-            {
-                this.DispatcherMapController?.SetPins(userPins);
-            }
         }
-        private OrderPinData ShowClientPin(UserVM userVM)
-        {
-            if (SelectedClientVM != null)
-            {
-                var previousClientPin = DispatcherMapController.OrderPinDataCollection.Where(item => item.Client == SelectedClientVM).FirstOrDefault();
-                previousClientPin.StartingPointPin.IsVisible = false;
-                previousClientPin.EndingPointPin.IsVisible = false;
-                previousClientPin.StartingPointPin.Color = DefaultClientColor;
-                previousClientPin.EndingPointPin.Color = DefaultClientColor;
-            }
-            SelectedClientVM = (ClientViewModel)userVM;
-            var clientPin = DispatcherMapController.OrderPinDataCollection.Where(item => item.Client == SelectedClientVM).FirstOrDefault();
-            clientPin.StartingPointPin.IsVisible = true;
-            clientPin.EndingPointPin.IsVisible = true;
-            return clientPin;
-
-        }
-        
+        //public async void Poll()
+        //{
+        //    try
+        //    {
+        //        object[] data = await TCPCLient.PollServerData(this.User) as object[];
+        //        if (data != null)
+        //        {
+        //            this.TaxiDispatcher.OrdersCollection = (data[0] as List<OrderViewModel>).ToObservableCollection();
+        //            this.TaxiDispatcher.Drivers = (data[1] as List<DriverViewModel>).ToObservableCollection();
+        //            Poll();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "Ok");
+        //        return;
+        //    }
+        //}
     }
 }

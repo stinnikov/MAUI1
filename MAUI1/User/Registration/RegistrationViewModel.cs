@@ -57,14 +57,12 @@ namespace MAUI1.User.Registration
                     user.Patronymic = patronymic;
                     user.DateOfBirth = dateOfBirth;
                     user.Created = DateTime.Now;
-                    var response = await MAUI1.TCPCLient.SendRegistrationQueryToServerAsync(user, 8888, "192.168.0.36");
+                    var response = await TCPCLient.CreateUserRegistrationQueryAsync(user);
+                    await Shell.Current.GoToAsync($"//Login");
                     //TODO: написать что регистрация прошла успешна и попросить залогиниться если 1, если 0 то хз пока
-                    await Shell.Current.GoToAsync("//Login");
+                    
                 }
             });
-
-            TestCommand = new Command(() => { TCPCLient.GetUsersFromServerAsync(); });
-            TestCommand1 = new Command(() => { TCPCLient.SendTokenToServer(); });
         }
     }
 }

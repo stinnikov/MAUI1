@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MAUI1.User.Dispatcher
+namespace MAUI1.User.Maps
 {
     public class LocationModel
     {
@@ -22,16 +22,16 @@ namespace MAUI1.User.Dispatcher
         }
     }
 
-    public class TDispatcherContext : DbContext
+    public class MapControllerContext : DbContext
     {
-        string sqlitePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), @"MAUI//MAUI1//Dispatcher");
+        string sqlitePath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), @"MAUI//MAUI1//Map");
         public DbSet<LocationModel> Locations { get; set; } = null!;
         //public DbSet<DriverUser> Drivers { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite($"Data Source={sqlitePath}");
         }
-        public TDispatcherContext()
+        public MapControllerContext()
         {
             sqlitePath = Path.Combine(sqlitePath, "locations.db");
             Directory.CreateDirectory(sqlitePath);

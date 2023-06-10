@@ -16,5 +16,6 @@ namespace MAUI1
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
+        public INavigation Navigation { get; set; }    
     }
 }

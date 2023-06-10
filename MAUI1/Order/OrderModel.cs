@@ -30,23 +30,37 @@ namespace MAUI1.User.Order
         public int Client_Id { get; set; } //идентификатор клиента
         public string ClientPhoneNumber { get; set; }
         public string StartingPoint { get; set; } //начальная точка
+        public double StartingPointLongitude { get; set; }
+        public double StartingPointLatitude { get; set; }
         public string EndingPoint { get; set; } //конечная точка
+        public double EndingPointLongitude { get; set; }
+        public double EndingPointLatitude { get; set; }
         public float Price { get; set; } //цена
         public OrderStatusType Status { get; set; } //статус заказа
         public int? Driver_Id { get; set; } //id виодителя который выполнил/яет заказ
         public string? DriverPhoneNumber { get; set; }
         //public string Tariff; //тариф
-        public OrderModel(string startingPoint, string endingPoint, UserModel client)
+        public OrderModel(string startingPoint, double startingPointLongitude, double startingPointLatitude,
+            string endingPoint, double endingPointLongitude, double endingPointLatitude, UserModel client)
         {
             this.StartingPoint = startingPoint;
+            this.StartingPointLongitude = startingPointLongitude;
+            this.StartingPointLatitude = startingPointLatitude;
             this.EndingPoint = endingPoint;
+            this.EndingPointLongitude = endingPointLongitude;
+            this.EndingPointLatitude = endingPointLatitude;
             Client_Id = client.Id;
             ClientPhoneNumber = client.PhoneNumber;
         }
-        public OrderModel(string startingPoint, string endingPoint, float price, UserModel client)
+        public OrderModel(string startingPoint, double startingPointLongitude, double startingPointLatitude,
+            string endingPoint, double endingPointLongitude, double endingPointLatitude, float price, UserModel client)
         {
             this.StartingPoint = startingPoint;
+            this.StartingPointLongitude = startingPointLongitude;
+            this.StartingPointLatitude = startingPointLatitude;
             this.EndingPoint = endingPoint;
+            this.EndingPointLongitude = endingPointLongitude;
+            this.EndingPointLatitude = endingPointLatitude;
             Client_Id = client.Id;
             ClientPhoneNumber = client.PhoneNumber;
             Price = price;

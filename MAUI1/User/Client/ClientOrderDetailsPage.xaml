@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MAUI1.User.Client.ClientOrderDetailsPage"
+             Title="ClientOrderDetailsPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Row="1" Grid.Column="1">
+            <VerticalStackLayout>
+                <HorizontalStackLayout>
+                    <Label x:Name="LabelUserName"></Label>
+                    <Label Text="{Binding DriverFullName}"></Label>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout>
+                    <Label x:Name="LabelPhoneNumber" Text="Телефон"></Label>
+                    <Label Text="{Binding DriverPhoneNumber}"></Label>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout>
+                    <Label x:Name="LabelStartingPoint" Text="Точка отправки"></Label>
+                    <Label Text="{Binding StartingPoint}"></Label>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout>
+                    <Label x:Name="LabelEndingPoint" Text="Точка прибытия"></Label>
+                    <Label Text="{Binding EndingPoint}"></Label>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout>
+                    <Label x:Name="LabelOrderStatus" Text="Статус"></Label>
+                    <Label Text="{Binding OrderStatus}"></Label>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

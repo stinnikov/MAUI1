@@ -11,6 +11,9 @@ using MAUI1.User.Dispatcher.Orders;
 using MAUI1.User.Order;
 using System.ComponentModel;
 using System.Net.Sockets;
+using MAUI1.User.Maps;
+using CommunityToolkit.Maui.Core.Extensions;
+using MAUI1.User.Client;
 
 namespace MAUI1.User.Driver
 {
@@ -18,22 +21,6 @@ namespace MAUI1.User.Driver
     {
         public DriverMapController DriverMapController { get; set; }
         public OrderViewModel Order { get; set; }
-        public ImageSource AvatarSource
-        {
-            get
-            {
-                var avatarPath = $"{App.projectPersonalFolderPath}\\avatar.png";
-                if (File.Exists(avatarPath))
-                {
-                    return ImageSource.FromFile(avatarPath);
-                }
-                else
-                {
-                    var defaultDriverImagePath = $"{App.projectPersonalFolderPath}\\DefaultDriverImage.png";
-                    return ImageSource.FromFile(defaultDriverImagePath);
-                }
-            }
-        }
         public ICommand camanda { get; set; }
         public ICommand TapOrderStartingPointLabelTappedCommand { get; set; }
         public ICommand TapOrderEndingPointLabelTappedCommand { get; set; }
@@ -51,8 +38,7 @@ namespace MAUI1.User.Driver
         }
 
         public DriverViewModel()
-        {
-            DriverCommandsInit();
+        { 
         }
         public void DriverCommandsInit()
         {
@@ -154,6 +140,43 @@ namespace MAUI1.User.Driver
                     }
                 }
             );
+        }
+        public new async void Poll()
+        {
+            var data = await base.Poll() as List<object>;
+            if (data != null)
+            {
+                var order = data[0] as OrderModel;
+                var client = data[1] as UserModel;
+                if (this.Order != null)
+                {
+                    if (client != null)
+                    {
+                        var clientVM = new ClientViewModel(client);
+                        if (order != null)
+                        {
+                            this.Order.Order = order;
+                            this.Order.ClientVM = clientVM;
+                        }
+                    }
+                }
+                else
+                {
+                    if (client != null)
+                    {
+                        var clientVM = new ClientViewModel(client);
+                        if (order != null)
+                        {
+                            this.Order = new OrderViewModel(order, clientVM, this);
+                        }
+                    }
+                }
+
+                System.Timers.Timer timer = new System.Timers.Timer();
+                timer.Elapsed += (o, e) => { timer.Stop(); this.Poll(); };
+                timer.Interval = 5 * 1000;
+                timer.Start();
+            }
         }
     }
 }

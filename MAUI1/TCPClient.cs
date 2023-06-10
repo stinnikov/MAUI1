@@ -26,7 +26,7 @@ namespace MAUI1
         static TCPCLient()
         {
         }
-        public static async Task<string> SendRegistrationQueryToServerAsync(UserModel user, int port = 8888, string uri = "127.0.0.1")
+        public static async Task<string> CreateUserRegistrationQueryAsync(UserModel user, int port = PORT,string uri = URI)
         {
             try
             {
@@ -35,23 +35,11 @@ namespace MAUI1
                 var stream = tcpClient.GetStream();
                 using var streamReader = new StreamReader(stream);
                 using var streamWriter = new StreamWriter(stream);
-                BinaryWriter binaryWriter = new BinaryWriter(stream);
-                var response = "";
-                string json = JsonConvert.SerializeObject(user, Formatting.Indented);
-                File.WriteAllText($"{App.projectPersonalFolderPath}\\reg.json", json);
-                await streamWriter.WriteLineAsync("REG");
-                await streamWriter.FlushAsync();
-                if (await streamReader.ReadLineAsync() == "1")
-                {
-                    using (FileStream fileStream = File.OpenRead($"{App.projectPersonalFolderPath}\\reg.json"))
-                    {
-                        var data = await File.ReadAllBytesAsync($"{App.projectPersonalFolderPath}\\reg.json");
-                        await streamWriter.WriteLineAsync(fileStream.Length.ToString());
-                        await streamWriter.FlushAsync();
-                        binaryWriter.Write(data);
-                    }
-                }
-                response += (await streamReader.ReadLineAsync());
+                //proverka
+                await SendMessageToServerAsync(streamWriter, "REG");
+                var userJson = JsonConvert.SerializeObject(user);
+                await SendMessageToServerAsync(streamWriter, userJson);
+                var response = await streamReader.ReadLineAsync();
                 tcpClient.Close();
                 return response;
             }
@@ -61,7 +49,7 @@ namespace MAUI1
                 return "0";
             }
         }
-        public static async Task<object> PollServerData(UserModel userDetails, int port = 8888, string uri = "127.0.0.1")
+        public static async Task<object> PollServerData(UserModel userDetails, int port = 8888, string uri = URI)
         {
             using TcpClient tcpClient = new TcpClient();
             await tcpClient.ConnectAsync(uri, port);
@@ -77,29 +65,47 @@ namespace MAUI1
 
             if(response == "1")
             {
-                if(userDetails.UserType == UserType.Client)
+                if (userDetails.UserType == UserType.Client)
                 {
                     var orderJson = await streamReader.ReadLineAsync();
-                    if(orderJson != null)
+                    var driverJson = await streamReader.ReadLineAsync();
+                    OrderModel order = null;
+                    UserModel driver = null;
+                    if (orderJson != "")
                     {
-                        var order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
-                        if(order != null)
+                        order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
+                        if (driverJson != "")
                         {
-                            return order;
+                            driver = JsonConvert.DeserializeObject<UserModel>(driverJson);
+                            tcpClient.Close();
+                            return new List<object> { order, driver };
                         }
+                        tcpClient.Close();
+                        return new List<object> { order,driver };
                     }
+                    tcpClient.Close();
+                    return new List<object> { order, driver };
                 }
                 else if (userDetails.UserType == UserType.Driver)
                 {
                     var orderJson = await streamReader.ReadLineAsync();
-                    if (orderJson != null)
+                    var clientJson = await streamReader.ReadLineAsync();
+                    OrderModel order = null;
+                    UserModel client = null;
+                    if (orderJson != "")
                     {
-                        var order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
-                        if (order != null)
+                        order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
+                        if (clientJson != "")
                         {
-                            return order;
+                            client = JsonConvert.DeserializeObject<UserModel>(clientJson);
+                            tcpClient.Close();
+                            return new List<object> { order, client };
                         }
+                        tcpClient.Close();
+                        return new List<object> { order, client };
                     }
+                    tcpClient.Close();
+                    return new List<object> { order, client };
                 }
                 else if (userDetails.UserType == UserType.Dispatcher)
                 {
@@ -108,11 +114,11 @@ namespace MAUI1
                     var driversJson = await streamReader.ReadLineAsync();
                     object[] dispatcherDataArray = new object[2];
                     tcpClient.Close();
-                    if (ordersJson != null)
+                    if (ordersJson != "")
                     {
                         OrderModel[] orders;
                         List<OrderViewModel> ovms = new List<OrderViewModel>();
-                        if (ordersJson != null)
+                        if (ordersJson != "")
                         {
                             orders = JsonConvert.DeserializeObject<OrderModel[]>(ordersJson);
                         }
@@ -121,7 +127,7 @@ namespace MAUI1
                             orders = new OrderModel[] { };
                         }
                         UserModel[] ordersUsers; 
-                        if (ordersUsersJson != null)
+                        if (ordersUsersJson != "")
                         {
                             ordersUsers = JsonConvert.DeserializeObject<UserModel[]>(ordersUsersJson);
                         }
@@ -150,7 +156,7 @@ namespace MAUI1
                                 dispatcherDataArray[0] = ovms;
                             }
                         }
-                        if (driversJson != null)
+                        if (driversJson != "")
                         {
                             var drivers = JsonConvert.DeserializeObject<UserModel[]>(driversJson);
                             var dvms = new List<DriverViewModel>();
@@ -166,7 +172,7 @@ namespace MAUI1
                 else if(userDetails.UserType == UserType.Administrator)
                 {
                     var usersJson = await streamReader.ReadLineAsync();
-                    if (usersJson != null)
+                    if (usersJson != "")
                     {
                         var users = JsonConvert.DeserializeObject<UserModel[]>(usersJson);
                         return users;
@@ -176,7 +182,7 @@ namespace MAUI1
             tcpClient.Close();
             return null;
         }
-        public static async void SendDriverAnswerToServer(bool answer, int port = 8888, string uri = "127.0.0.1")
+        public static async void SendDriverAnswerToServer(bool answer, int port = 8888, string uri = URI)
         {
             using TcpClient tcpClient = new TcpClient();
             await tcpClient.ConnectAsync(uri, port);
@@ -192,7 +198,7 @@ namespace MAUI1
                 await SendMessageToServerAsync(streamWriter, answer.ToString());
             }
         }
-        public static async void CreateDriverOrderRequest(string driverPhone, string clientPhone, int port = 8888, string uri = "127.0.0.1")
+        public static async void CreateDriverOrderRequest(string driverPhone, string clientPhone, int port = PORT, string uri = URI)
         {
             using TcpClient tcpClient = new TcpClient();
             await tcpClient.ConnectAsync(uri, port);
@@ -209,7 +215,36 @@ namespace MAUI1
                 await SendMessageToServerAsync(streamWriter, clientPhone);
             }
         }
-        public static async Task<(double, double)> GetUserLocation(string userPhoneNumber, int port = 8888, string uri = "127.0.0.1")
+        public static async Task<bool> CreateOrderRequest(OrderModel order, int port = PORT, string uri = URI)
+        {
+            try
+            {
+                using TcpClient tcpClient = new TcpClient();
+                await tcpClient.ConnectAsync(uri, port);
+                var stream = tcpClient.GetStream();
+                using var streamReader = new StreamReader(stream);
+                using var streamWriter = new StreamWriter(stream);
+                await SendMessageToServerAsync(streamWriter, "CREATEORDER");
+                var token = GetAccessToken();
+                await SendMessageToServerAsync(streamWriter, token);
+                var response = await streamReader.ReadLineAsync();
+                if (response == "1")
+                {
+                    var orderJson = JsonConvert.SerializeObject(order);
+                    await SendMessageToServerAsync(streamWriter, orderJson);
+                    response = await streamReader.ReadLineAsync();
+                    tcpClient.Close();
+                    return bool.Parse(response);
+                }
+                return false;
+            }
+            catch(Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
+                return false;
+            }
+        }
+        public static async Task<(double, double)> GetUserLocation(string userPhoneNumber, int port = PORT, string uri = URI)
         {
             using TcpClient tcpClient = new TcpClient();
             await tcpClient.ConnectAsync(uri, port);
@@ -282,11 +317,11 @@ namespace MAUI1
                         {
                             ClientViewModel clientViewModel = new ClientViewModel(user);
                             var orderJson = await streamReader.ReadLineAsync();
-                            if (orderJson != null)
+                            if (orderJson != "")
                             {
                                 var order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
                                 var driverJson = await streamReader.ReadLineAsync();
-                                if (driverJson != null)
+                                if (driverJson != "")
                                 {
                                     var driver = JsonConvert.DeserializeObject<UserModel>(driverJson);
                                     var driverVM = new DriverViewModel(driver);
@@ -303,11 +338,11 @@ namespace MAUI1
                         {
                             DriverViewModel driverViewModel = new DriverViewModel(user);
                             var orderJson = await streamReader.ReadLineAsync();
-                            if (orderJson != null)
+                            if (orderJson != "")
                             {
                                 var order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
                                 var clientJson = await streamReader.ReadLineAsync();
-                                if (clientJson != null)
+                                if (clientJson != "")
                                 {
                                     var client = JsonConvert.DeserializeObject<UserModel>(clientJson);
                                     ClientViewModel clientViewModel = new ClientViewModel(client);
@@ -324,11 +359,11 @@ namespace MAUI1
                             var driversJson = await streamReader.ReadLineAsync();
                             tcpClient.Close();
                             TaxiDispatcherModel tdispatcher = new TaxiDispatcherModel(user.FirstName, user.LastName, user.PhoneNumber, user.Email, user.Password);
-                            if (ordersJson != null)
+                            if (ordersJson != "")
                             {
                                 OrderModel[] orders;
                                 List<OrderViewModel> ovms = new List<OrderViewModel>();
-                                if (ordersJson != null)
+                                if (ordersJson != "")
                                 {
                                     orders = JsonConvert.DeserializeObject<OrderModel[]>(ordersJson);
                                 }
@@ -337,7 +372,7 @@ namespace MAUI1
                                     orders = new OrderModel[] { };
                                 }
                                 UserModel[] ordersUsers;
-                                if (ordersUsersJson != null)
+                                if (ordersUsersJson != "")
                                 {
                                     ordersUsers = JsonConvert.DeserializeObject<UserModel[]>(ordersUsersJson);
                                 }
@@ -367,7 +402,7 @@ namespace MAUI1
                                 }
                                 tdispatcher.OrdersCollection = ovms.ToObservableCollection();
                             }
-                            if (driversJson != null)
+                            if (driversJson != "")
                             {
                                 var drivers = JsonConvert.DeserializeObject<UserModel[]>(driversJson);
                                 var dvms = new List<DriverViewModel>();
@@ -431,11 +466,11 @@ namespace MAUI1
                 {
                     ClientViewModel clientViewModel = new ClientViewModel(user);
                     var orderJson = await streamReader.ReadLineAsync();
-                    if (orderJson != null)
+                    if (orderJson != "")
                     {
                         var order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
                         var driverJson = await streamReader.ReadLineAsync();
-                        if (driverJson != null)
+                        if (driverJson != "")
                         {
                             var driver = JsonConvert.DeserializeObject<UserModel>(driverJson);
                             var driverVM = new DriverViewModel(driver);
@@ -452,11 +487,11 @@ namespace MAUI1
                 {
                     DriverViewModel driverViewModel = new DriverViewModel(user);
                     var orderJson = await streamReader.ReadLineAsync();
-                    if (orderJson != null)
+                    if (orderJson != "")
                     {
                         var order = JsonConvert.DeserializeObject<OrderModel>(orderJson);
                         var clientJson = await streamReader.ReadLineAsync();
-                        if (clientJson != null)
+                        if (clientJson != "")
                         {
                             var client = JsonConvert.DeserializeObject<UserModel>(clientJson);
                             ClientViewModel clientViewModel = new ClientViewModel(client);
@@ -473,7 +508,7 @@ namespace MAUI1
                         var driversJson = await streamReader.ReadLineAsync();
                         tcpClient.Close();
                         TaxiDispatcherModel tdispatcher = new TaxiDispatcherModel(user.FirstName, user.LastName, user.PhoneNumber, user.Email, user.Password);
-                        if (ordersJson != null)
+                        if (ordersJson != "")
                         {
                             OrderModel[] orders;
                             List<OrderViewModel> ovms = new List<OrderViewModel>();
@@ -486,7 +521,7 @@ namespace MAUI1
                                 orders = new OrderModel[] { };
                             }
                             UserModel[] ordersUsers;
-                            if (ordersUsersJson != null)
+                            if (ordersUsersJson != "")
                             {
                                 ordersUsers = JsonConvert.DeserializeObject<UserModel[]>(ordersUsersJson);
                             }
@@ -516,7 +551,7 @@ namespace MAUI1
                             }
                             tdispatcher.OrdersCollection = ovms.ToObservableCollection();
                         }
-                        if (driversJson != null)
+                        if (driversJson != "")
                         {
                             var drivers = JsonConvert.DeserializeObject<UserModel[]>(driversJson);
                             var dvms = new List<DriverViewModel>();
@@ -596,7 +631,7 @@ namespace MAUI1
 
 
 
-        public static async Task<(bool, string)> SendTokenToServer(int port = 8888, string uri = "127.0.0.1")
+        public static async Task<(bool, string)> SendTokenToServerAsync(int port = 8888, string uri = "127.0.0.1")
         {
             using TcpClient tcpClient = new TcpClient();
             await tcpClient.ConnectAsync(uri, port);

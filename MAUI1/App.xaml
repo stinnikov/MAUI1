@@ -43,6 +43,10 @@
                 <Setter Property="VerticalOptions" Value="Center"/>
             </Style>
 
+            <Style TargetType="Border">
+                <Setter Property="BackgroundColor" Value="Transparent"></Setter>
+            </Style>
+
             <Style x:Key="imageButtonStyleWithTrigger" TargetType="ImageButton">
                 <Style.Triggers>
                     <Trigger TargetType="ImageButton" Property="IsPressed" Value="True">

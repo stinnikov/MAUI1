@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace MAUI1.User.Login
 {
-    internal class LoginViewModel
+    internal class LoginViewModel : ViewModel
     {
         public ICommand LoginCommand { get; set; }
         public LoginViewModel() 
@@ -29,19 +29,23 @@ namespace MAUI1.User.Login
                     {
                         if (userVM.GetType() == typeof(ClientViewModel))
                         {
-                            Application.Current.MainPage = new ClientPage(userVM as ClientViewModel);
+                            var currentPage = this.Navigation.NavigationStack.Last();
+                            this.Navigation.InsertPageBefore(new ClientPage(userVM as ClientViewModel), currentPage);
+                            this.Navigation.PopAsync();
+                            this.Navigation.RemovePage(currentPage);
+                            //await this.Navigation.PushAsync(new ClientPage(userVM as ClientViewModel));
                         }
                         else if (userVM.GetType() == typeof(DriverViewModel))
                         {
-                            Application.Current.MainPage = new DriverPage(userVM as DriverViewModel);
+                            Application.Current.MainPage = new NavigationPage(new DriverPage(userVM as DriverViewModel));
                         }
                         else if (userVM.GetType() == typeof(TaxiDispatcherViewModel))
                         {
-                            Application.Current.MainPage = new TaxiDispatcherPage(userVM as TaxiDispatcherViewModel);
+                            Application.Current.MainPage = new NavigationPage(new TaxiDispatcherPage(userVM as TaxiDispatcherViewModel));
                         }
                         else if (userVM.GetType() == typeof(AdminVM))
                         {
-                            Application.Current.MainPage = new Admin.AdminPage(userVM as AdminVM);
+                            Application.Current.MainPage = new NavigationPage(new Admin.AdminPage(userVM as AdminVM));
                         }
                         else
                         {

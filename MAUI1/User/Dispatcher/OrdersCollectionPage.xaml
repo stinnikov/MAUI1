@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:dispatcher="clr-namespace:MAUI1.User.Dispatcher"
+             x:Class="MAUI1.User.Dispatcher.OrdersCollectionPage"
+             Title="Orders"
+             >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="ORDERSFILTER" Command="{Binding SelectFilterCommand}"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <ResourceDictionary>
+                <Style TargetType="Label" x:Key="labelStyle">
+                    <Setter Property="FontSize" Value="16"></Setter>
+                    <Setter Property="HorizontalOptions" Value="Start"></Setter>
+                    <Setter Property="VerticalOptions" Value="Start"></Setter>
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+                </Style>
+                <Style TargetType="Border">
+                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+                    <Setter Property="BackgroundColor" Value="Transparent"></Setter>
+                </Style>
+                <Style TargetType="Label">
+                    <Setter Property="FontSize" Value="12"></Setter>
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}"></Setter>
+                </Style>
+
+            </ResourceDictionary>
+        </Grid.Resources>
+        <Border Grid.Row="0" IsVisible="{OnPlatform Android=False}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+
+                <Border Grid.Column="0">
+                    <Label Text="Имя пользователя" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="1">
+                    <Label Text="Телефон" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="2">
+                    <Label Text="Email" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="3">
+                    <Label Text="Адрес отправки" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="4">
+                    <Label Text="Адрес прибытия" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="5">
+                    <Label Text="Статус" Style="{StaticResource labelStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectFilterCommand}">
+                            </TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Border>
+            </Grid>
+        </Border>
+        <ScrollView Grid.Row="1" IsVisible="{OnPlatform Android=False}">
+            <ListView ItemsSource="{Binding Orders}"
+                  RowHeight="45"
+                  SelectionMode="Single">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                            EventName="ItemTapped"
+                            Command="{Binding SelectOrderCommand}"
+                            EventArgsConverter="{toolkit:ItemTappedEventArgsConverter}">
+                    </toolkit:EventToCommandBehavior>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid VerticalOptions="Center" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding ClientName}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"/>
+                                <Label Grid.Column="1" Text="{Binding ClientPhoneNumber}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="2" Text="{Binding ClientEmail}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="3" Text="{Binding StartingPoint}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="4" Text="{Binding EndingPoint}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="5" Text="{Binding OrderStatus}"  HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"></Label>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollView>
+        
+        
+        
+        <Border Grid.Row="0" IsVisible="{OnPlatform Android=True, WinUI=False}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="2.4*"></ColumnDefinition>
+                    <ColumnDefinition Width="2.4*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0">
+                    <Label Text="Телефон" Margin="5" FontSize="12" VerticalOptions="Center" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+                <Border Grid.Column="1">
+                    <Label Text="Адрес отправки" Margin="5" FontSize="12" VerticalOptions="Center" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="2">
+                    <Label Text="Адрес прибытия" Margin="5" FontSize="12" VerticalOptions="Center" Style="{StaticResource labelStyle}"></Label>
+                </Border>
+
+                <Border Grid.Column="3">
+                    <Label Text="Статус" Margin="5" FontSize="12" VerticalOptions="Center" Style="{StaticResource labelStyle}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SelectFilterCommand}">
+                            </TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Border>
+            </Grid>
+        </Border>
+        <ScrollView Grid.Row="1" IsVisible="{OnPlatform Android=True, WinUI=False}">
+            <ListView ItemsSource="{Binding Orders}"
+                  RowHeight="45"
+                  SelectionMode="Single">
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                            EventName="ItemTapped"
+                            Command="{Binding SelectOrderCommand}"
+                            EventArgsConverter="{toolkit:ItemTappedEventArgsConverter}">
+                    </toolkit:EventToCommandBehavior>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid VerticalOptions="Center" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2.4*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2.4*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding ClientPhoneNumber}" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="1" Text="{Binding StartingPoint}" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="2" Text="{Binding EndingPoint}" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand"></Label>
+                                <Label Grid.Column="3" Text="{Binding OrderStatus}"  HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand"></Label>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollView>
+    </Grid>
+</ContentPage>

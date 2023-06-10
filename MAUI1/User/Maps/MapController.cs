@@ -7,6 +7,7 @@ using Mapsui.UI.Maui;
 using Mapsui.Utilities;
 using Mapsui.Widgets;
 using Mapsui.Widgets.ButtonWidget;
+using MAUI1.User.Maps;
 using Microsoft.Maui.ApplicationModel;
 using System;
 using System.Collections.Generic;
@@ -15,15 +16,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MAUI1.User
+namespace MAUI1.User.Maps
 {
     public class MapController
     {
+        public bool IsMyLococationNeedable = true;
         public bool IsMapClickable = true;
         internal MapView mapView { get; set; }
 
         private Location _location = new();
         public Location Location { get { return _location; } set { if (value != null) { _location = value; } } }
+        public static MapControllerContext MapControllerContext { get; set; } = new MapControllerContext();
+        public static List<LocationModel> Locations { get; set; }
         private CancellationTokenSource _cancelTokenSource;
         private bool _isCheckingLocation;
         private ButtonWidget _zoomInButtonWidget;
@@ -33,6 +37,7 @@ namespace MAUI1.User
         public MapController(MapView mapView)
         {
             this.mapView = mapView;
+            Locations = MapControllerContext.Locations.Local.ToList();
             MapViewInit();
         }
         public static async Task<string> GetAddressFromLonLat(double longitude, double latitude)
@@ -66,15 +71,15 @@ namespace MAUI1.User
             if (status == PermissionStatus.Granted)
             {
                 ToggleGPS(true);
-                var token = TCPCLient.GetAccessToken();
-                System.Timers.Timer timer = new System.Timers.Timer();
-                timer.Interval = 10000;
-                timer.Elapsed += async (o, e) =>
-                {
-                    GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
-                    var loc = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-                    TCPCLient.RefreshLocationDataOnServer(loc.Longitude, loc.Latitude);
-                };
+                //var token = TCPCLient.GetAccessToken();
+                //System.Timers.Timer timer = new System.Timers.Timer();
+                //timer.Interval = 10000;
+                //timer.Elapsed += async (o, e) =>
+                //{
+                //    //GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+                //    //var loc = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+                //    //TCPCLient.RefreshLocationDataOnServer(loc.Longitude, loc.Latitude);
+                //};
             }
             CreateButtons();
             if (IsMapClickable)
@@ -293,22 +298,33 @@ namespace MAUI1.User
         #region ЛОКАЦИЯ
         public async void ToggleGPS(bool isToggled)
         {
-            if (isToggled)
+            try
             {
-                if (await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(1), 5, true, new ListenerSettings
+                if (isToggled)
                 {
-                    ActivityType = ActivityType.AutomotiveNavigation,
-                    AllowBackgroundUpdates = true,
-                    DeferLocationUpdates = false,
-                    ListenForSignificantChanges = false,
-                    PauseLocationUpdatesAutomatically = false,
-                }))
+                    if (await CrossGeolocator.Current.StartListeningAsync(TimeSpan.FromSeconds(1), 5, true, new ListenerSettings
+                    {
+                        ActivityType = ActivityType.AutomotiveNavigation,
+                        AllowBackgroundUpdates = true,
+                        DeferLocationUpdates = false,
+                        ListenForSignificantChanges = false,
+                        PauseLocationUpdatesAutomatically = false,
+                    }))
+                    {
+                        CrossGeolocator.Current.PositionChanged += GetLocation;
+                        CrossGeolocator.Current.PositionError += NotifyPosError;
+                    }
+                }
+                else
                 {
-                    CrossGeolocator.Current.PositionChanged += GetLocation;
-                    CrossGeolocator.Current.PositionError += NotifyPosError;
+                    if (await CrossGeolocator.Current.StopListeningAsync())
+                    {
+                        CrossGeolocator.Current.PositionChanged -= GetLocation;
+                        CrossGeolocator.Current.PositionError -= NotifyPosError;
+                    }
                 }
             }
-            else
+            catch
             {
                 if (await CrossGeolocator.Current.StopListeningAsync())
                 {
@@ -323,7 +339,7 @@ namespace MAUI1.User
             {
                 _isCheckingLocation = true;
                 _cancelTokenSource = new CancellationTokenSource();
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(3));
                 var loc = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
                 if (_cancelTokenSource.Token.IsCancellationRequested)
                 {
@@ -335,7 +351,7 @@ namespace MAUI1.User
                     Location = loc;
                     mapView.MyLocationLayer.UpdateMyLocation(new Mapsui.UI.Maui.Position(Location.Latitude, Location.Longitude));
                     mapView.Refresh();
-                    TCPCLient.RefreshLocationDataOnServer(loc.Longitude, loc.Latitude);
+                    //TCPCLient.RefreshLocationDataOnServer(loc.Longitude, loc.Latitude);
                 }
 
             }

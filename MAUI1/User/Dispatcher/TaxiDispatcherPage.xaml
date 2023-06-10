@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:MAUI1.Converters"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MAUI1.User.Dispatcher.TaxiDispatcherPage"
-             Title="TaxiDispatcherPage">
+             Title="">
     <ContentPage.Resources>
         <ResourceDictionary>
             <!--<toolkit:SelectedItemEventArgsConverter x:Key="SelectedItemEventArgsConverter"></toolkit:SelectedItemEventArgsConverter>-->
@@ -19,238 +19,38 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Clicked="LogoutClicked" IconImageSource="wt.png"></ToolbarItem>
+        <ToolbarItem Clicked="ToolbarItem_Clicked_1" Text="ORDERS"></ToolbarItem>
+    </ContentPage.ToolbarItems>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2.25*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="12*"></RowDefinition>
         </Grid.RowDefinitions>
-
-        <mapsui:MapView x:Name="mapView"></mapsui:MapView>
-
-        <Border Grid.Row="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <Grid Margin="5,0,0,0">
-                    <!-- сетка под Radio Buttons -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <HorizontalStackLayout>
-                        <RadioButton x:Name="AllOrders" IsChecked="{Binding IsShownAllOrders}" Content="Все заказы"></RadioButton>
-                        <RadioButton x:Name="SelectedClientOrder" IsChecked="{Binding IsShownAllOrders, Converter={StaticResource InverseBooleanConverter}}" Content="Выбранный заказ"></RadioButton>
+        <Border BackgroundColor="Transparent">
+            <ScrollView Orientation="Horizontal">
+                <HorizontalStackLayout Spacing="5" VerticalOptions="Center" BindingContext="{Binding SelectedOrderVM}">
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                    </HorizontalStackLayout.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Image HeightRequest="30"  Source="phone.png"></Image>
+                        <Label Text="{Binding ClientPhoneNumber}" VerticalOptions="Center"></Label>
                     </HorizontalStackLayout>
-
-                    <HorizontalStackLayout Grid.Column="1">
-                        <CheckBox IsChecked="{Binding IsDriversShownOnTheMap}">
-                            <CheckBox.Behaviors>
-                                <toolkit:EventToCommandBehavior
-                                    EventName="CheckedChanged"
-                                    Command="{Binding DriversOnTheMapShowCheckedChangedCommand}">
-                                </toolkit:EventToCommandBehavior>
-                            </CheckBox.Behaviors>
-                        </CheckBox>
-                        <Label Text="Отображать водителей" VerticalOptions="Center"></Label>
+                    <HorizontalStackLayout Spacing="5">
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Test"></TapGestureRecognizer>
+                        </HorizontalStackLayout.GestureRecognizers>
+                        <Image HeightRequest="30" Source="pin.png"></Image>
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding StartingPoint}" VerticalOptions="Center"></Label>
+                            <Label Text="{Binding EndingPoint}" VerticalOptions="Center"></Label>
+                        </VerticalStackLayout>
                     </HorizontalStackLayout>
-
-                    <HorizontalStackLayout Grid.Column="2">
-                        <CheckBox IsChecked="{Binding IsAllClientsShownOnTheMap}">
-                            <CheckBox.Behaviors>
-                                <toolkit:EventToCommandBehavior
-                                    EventName="CheckedChanged"
-                                    Command="{Binding AllClientOnTheMapCheckedChangedCommand}">
-                                </toolkit:EventToCommandBehavior>
-                            </CheckBox.Behaviors>
-                        </CheckBox>
-                        <Label Text="Отображать всех клиентов" VerticalOptions="Center"></Label>
-                    </HorizontalStackLayout>
-                </Grid>
-                <Border Grid.Row="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-
-                    </Grid>
-                </Border>
-
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <Border>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-
-
-                            <Border Grid.Column="0">
-                                <Label Text="Имя пользователя" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                            <Border Grid.Column="1">
-                                <Label Text="Телефон" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                            <Border Grid.Column="2">
-                                <Label Text="Email" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                            <Border Grid.Column="3">
-                                <Label Text="Адрес отправки" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                            <Border Grid.Column="4">
-                                <Label Text="Адрес прибытия" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                            <Border Grid.Column="5">
-                                <Label Text="Статус" Style="{StaticResource labelStyle}"></Label>
-                            </Border>
-
-                        </Grid>
-                    </Border>
-                    <!--Панель названий-->
-
-                    <ListView x:Name="ClientOrderList"
-                          Grid.Row="1"
-                          Grid.Column="0"
-                          ItemsSource="{Binding Orders}"
-                          RowHeight="45"
-                          SelectionMode="Single"
-                          IsVisible="{Binding Source={x:Reference AllOrders}, Path=IsChecked}">
-                        <ListView.Behaviors>
-                            <toolkit:EventToCommandBehavior
-                            EventName="ItemTapped"
-                            Command="{Binding ClientOrderSelectedCommand}"
-                            EventArgsConverter="{toolkit:ItemTappedEventArgsConverter}">
-                            </toolkit:EventToCommandBehavior>
-                        </ListView.Behaviors>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Text="{Binding ClientName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                                        <Label Grid.Column="1" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="2" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="3" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="4" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                        <Label Grid.Column="5" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"></Label>
-                                    </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    <Grid Grid.Column="0" Grid.Row="1" IsVisible="{Binding Source={x:Reference SelectedClientOrder}, Path=IsChecked}"
-                          Margin="0,15,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="0.3*"></RowDefinition>
-                            <RowDefinition Height="0.5*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Grid.Column="0"
-                               IsVisible="{Binding IsAllClientsShownOnTheMap, Converter={StaticResource InverseBooleanConverter}}"
-                               Text="{Binding SelectedClientVM.UserFullName}"
-                               TextColor="{Binding DefaultClientColor}" 
-                               HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="0"
-                               IsVisible="{Binding IsAllClientsShownOnTheMap}"
-                               Text="{Binding SelectedClientVM.UserFullName}"
-                               TextColor="{Binding DefaultSelectedClientColor}" 
-                               HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-
-                            <Label Grid.Column="1" BindingContext="{Binding SelectedOrderVM}" Text="{Binding ClientPhone}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="2" BindingContext="{Binding SelectedOrderVM}" Text="{Binding ClientEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="3" BindingContext="{Binding SelectedOrderVM}" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="4" BindingContext="{Binding SelectedOrderVM}" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="5" BindingContext="{Binding SelectedOrderVM}" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                        </Grid>
-                        <Grid Grid.Row="1">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding DriverConfirmationCommand}">
-                                </TapGestureRecognizer>
-                            </Grid.GestureRecognizers>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                                <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="3*"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="{Binding SelectedDriverVM.UserFullName}" TextColor="{Binding DefaultDriverColor}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="1" BindingContext="{Binding SelectedDriverVM}" Text="{Binding UserPhoneNumber}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="2" BindingContext="{Binding SelectedDriverVM}" Text="{Binding UserEmail}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="3" BindingContext="{Binding SelectedDriverVM}" Text="{Binding Order.StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="4" BindingContext="{Binding SelectedDriverVM}" Text="{Binding Order.EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                            <Label Grid.Column="5" BindingContext="{Binding SelectedDriverVM}" Text="{Binding Order.OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand"/>
-                        </Grid>
-                    </Grid>
-
-                    <Border Grid.Column="1">
-                        <Label Text="Инфо" Style="{StaticResource labelStyle}"></Label>
-                    </Border>
-
-                    <VerticalStackLayout Spacing="5" Margin="5,0,0,0" Grid.Row="1" Grid.Column="1">
-
-                        <HorizontalStackLayout Spacing="5" Margin="0,5,0,0">
-                            <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultClientColor}" Fill="{Binding DefaultClientColor}"></Ellipse>
-                            <Label Text="-" Margin="0,5,0,0"></Label>
-                            <Label Text="Клиент" Margin="0,5,0,0"></Label>
-                        </HorizontalStackLayout>
-
-                        <HorizontalStackLayout Spacing="5" IsVisible="{Binding IsAllClientsShownOnTheMap}">
-                            <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultSelectedClientColor}" Fill="{Binding DefaultSelectedClientColor}"></Ellipse>
-                            <Label Text="-" Margin="0,5,0,0"></Label>
-                            <Label Text="Выбранный клиент" Margin="0,5,0,0"></Label>
-                        </HorizontalStackLayout>
-
-                        <HorizontalStackLayout Spacing="5">
-                            <Ellipse HeightRequest="30" WidthRequest="30" Stroke="{Binding DefaultDriverColor}" Fill="{Binding DefaultDriverColor}"></Ellipse>
-                            <Label Text="-" Margin="0,5,0,0"></Label>
-                            <Label Text="Водитель" Margin="0,5,0,0"></Label>
-                        </HorizontalStackLayout>
-                        <Button Text="TEST" Command="{Binding test}" CommandParameter="{Binding Source={x:Reference mapView}}"></Button>
-                    </VerticalStackLayout>
-                </Grid>
-            </Grid>
+                </HorizontalStackLayout>
+            </ScrollView>
         </Border>
+        <mapsui:MapView Grid.Row="1" x:Name="mapView"></mapsui:MapView>
     </Grid>
 </ContentPage>

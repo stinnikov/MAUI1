@@ -8,6 +8,11 @@
              Title="DriverPage"
              
              >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Clicked="LogoutClicked" IconImageSource="wt.png">
+
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label" x:Key="labelStyle">
@@ -26,144 +31,34 @@
     </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="6*"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="1.5*"/>
+            <RowDefinition Height="52"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <mapsui:MapView x:Name="mapView"></mapsui:MapView>
-        <Grid Grid.Row="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <!--номер_заказа ава имя номер_телефона емейл откуда куда ещё_чёто-->
-                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-
-                <Border Grid.Column="0">
-                    <Label Text="Имя пользователя"  Style="{StaticResource labelStyle}"></Label>
-                </Border>
-
-                <Border Grid.Column="1">
-                    <Label Text="Адрес отправки" Style="{StaticResource labelStyle}"></Label>
-                </Border>
-
-                <Border Grid.Column="2">
-                    <Label Text="Адрес прибытия" Style="{StaticResource labelStyle}"></Label>
-                </Border>
-
-                <Border Grid.Column="3">
-                    <Label Text="Цена" Style="{StaticResource labelStyle}"></Label>
-                </Border>
-
-                <Border Grid.Column="4">
-                    <Label Text="Статус" Style="{StaticResource labelStyle}"></Label>
-                </Border>
-
-            </Grid>
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="45"></RowDefinition>
-                <RowDefinition Height="5"></RowDefinition>
-            </Grid.RowDefinitions>
-
-            <Grid Margin="0,5,0,0" BindingContext="{Binding Order}">
-                <Grid.ColumnDefinitions>
-                    <!--имя откуда куда цена статус-->
-                    <ColumnDefinition Width="2.5*"></ColumnDefinition>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="3*"></ColumnDefinition>
-                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                    <ColumnDefinition Width="0.8*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <HorizontalStackLayout Grid.Column="0" BindingContext="{Binding ClientVM}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Spacing="5">
-                    <toolkit:AvatarView BorderColor="{AppThemeBinding Light={StaticResource LightSecondaryColor}, Dark={StaticResource DarkSecondaryColor}}" BorderWidth="0.73" ImageSource="{Binding AvatarSource}"></toolkit:AvatarView>
-                    <Label  Text="{Binding UserFullName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+        
+            <Border BackgroundColor="Transparent">
+            <ScrollView Orientation="Horizontal">
+                <HorizontalStackLayout Spacing="5" VerticalOptions="Center" BindingContext="{Binding Order}">
+                    <HorizontalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"></TapGestureRecognizer>
+                    </HorizontalStackLayout.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                        <Image HeightRequest="30"  Source="phone.png">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Test"></TapGestureRecognizer>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Label Text="{Binding ClientPhoneNumber}" VerticalOptions="Center"></Label>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="5">
+                        <Image HeightRequest="30" Source="pin.png"></Image>
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding StartingPoint}" VerticalOptions="Center"></Label>
+                            <Label Text="{Binding EndingPoint}" VerticalOptions="Center"></Label>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
                 </HorizontalStackLayout>
-
-                <Label Grid.Column="1" Text="{Binding StartingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:DriverViewModel}}, Path=TapOrderStartingPointLabelTappedCommand}">
-                        </TapGestureRecognizer>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="2" Text="{Binding EndingPoint}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:DriverViewModel}}, Path=TapOrderEndingPointLabelTappedCommand}">
-                        </TapGestureRecognizer>
-                    </Label.GestureRecognizers>
-                </Label>
-                <Label Grid.Column="3" Text="{Binding OrderPrice}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-                <Label Grid.Column="4" Text="{Binding OrderStatus}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
-
-            </Grid>
-
-            <HorizontalStackLayout Grid.Row="1" Spacing="5" BindingContext="{Binding Order}" VerticalOptions="Start" HorizontalOptions="Center">
-                <Button Text="Принять" Command="{Binding AcceptOrderCommand}"  Style="{StaticResource buttonStyle}" WidthRequest="100">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Выполняется">
-                            <Setter Property="BackgroundColor" Value="ForestGreen"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён?">
-                            <Setter Property="BackgroundColor" Value="Gray"/>
-                            <Setter Property="IsEnabled" Value="False"></Setter>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён">
-                            <Setter Property="BackgroundColor" Value="Gray"/>
-                            <Setter Property="IsEnabled" Value="False"></Setter>
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
-                <Button Text="Отказаться" Command="{Binding DeclineOrderCommand}" Style="{StaticResource buttonStyle}" WidthRequest="100">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Отменён">
-                            <Setter Property="BackgroundColor" Value="Red"/>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён?">
-                            <Setter Property="BackgroundColor" Value="Gray"/>
-                            <Setter Property="IsEnabled" Value="False"></Setter>
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён">
-                            <Setter Property="BackgroundColor" Value="Gray"/>
-                            <Setter Property="IsEnabled" Value="False"></Setter>
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
-                <HorizontalStackLayout IsVisible="False">
-                    <HorizontalStackLayout.Triggers>
-                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding OrderStatus}" Value="Выполняется">
-                            <Setter Property="IsVisible" Value="True"></Setter>
-                        </DataTrigger>
-                        <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding OrderStatus}" Value="Завершён?">
-                            <Setter Property="IsVisible" Value="True"></Setter>
-                        </DataTrigger>
-                    </HorizontalStackLayout.Triggers>
-                    <Button Text="Завершить" Command="{Binding CompleteWithQuestionMarkCommand}" Style="{StaticResource buttonStyle}" WidthRequest="100">
-                        <Button.Triggers>
-                            <DataTrigger TargetType="Button" Binding="{Binding OrderStatus}" Value="Завершён?">
-                                <Setter Property="Text" Value="{Binding OrderStatus}"></Setter>
-                                <Setter Property="BackgroundColor" Value="Grey"></Setter>
-                                <Setter Property="IsEnabled" Value="False"></Setter>
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
-                </HorizontalStackLayout>
-            </HorizontalStackLayout>
-        </Grid>
-
+            </ScrollView>
+        </Border>
+            <mapsui:MapView x:Name="mapView" Grid.Row="1"></mapsui:MapView>
     </Grid>
 </ContentPage>
